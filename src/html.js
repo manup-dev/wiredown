@@ -21,7 +21,7 @@ export function blockIndexOf(v) {
 
 const nameOf = (s) => String((s && (s.label || s.id)) || 'Screen');
 
-function captions(mock) {
+export function captions(mock) {
   const byId = new Map();
   for (const s of mock.screens) if (s && typeof s.id === 'string' && !byId.has(s.id)) byId.set(s.id, s);
   const cap = (s) => {
@@ -46,7 +46,7 @@ function notesHtml(mock) {
   return out + '</ol>';
 }
 
-/** opts: { blockIndex, digest }. Returns the figure, or an error card (too large, not drawable). */
+/** opts: { blockIndex, digest, icons }. Returns the figure, or an error card (too large, not drawable). */
 export function renderMockHtml(mock, opts = {}) {
   try {
     if (!mock || !Array.isArray(mock.screens) || !mock.screens.length) return messageCard(MSG.empty);
@@ -65,10 +65,11 @@ export function renderMockHtml(mock, opts = {}) {
       if (g.length > 1) out += '<div class="wm-variants">';
       for (const i of g) {
         const s = mock.screens[i];
-        const svg = renderScreenSvg(mock, i, b);
+        const svg = renderScreenSvg(mock, i, b, opts && opts.icons);
         if (!svg) return messageCard(MSG.failed);
         const id = typeof s.id === 'string' && SCREEN_ID.test(s.id) ? ` id="wm-${b}-${s.id}"` : '';
-        const cls = proto && i === start ? 'wm-screen wm-start' : 'wm-screen';
+        const mo = proto ? (s.root && s.root.attrs && s.root.attrs.motion) || mock.motion : null;
+        const cls = (proto && i === start ? 'wm-screen wm-start' : 'wm-screen') + (mo && mo !== 'none' ? ` wm-in-${mo}` : '');
         out += `<div class="${cls}"${id} data-wm-screen="${esc(s.id)}"><div class="wm-cap">${esc(cap(s))}</div>${svg}</div>`;
         listed.push({ screen: s, cap: cap(s) });
         if (out.length > WM_LIMITS.output) return messageCard(MSG.tooLarge);

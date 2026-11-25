@@ -11,7 +11,7 @@ const row = (name, group, children, attrs = {}, flags = [], labels = 0) =>
   ({ name, group, children, attrs: Object.freeze({ ...BOX, ...attrs }), flags: Object.freeze(flags), labels });
 
 const rows = [
-  row('screen', 'frame', 'any', {}, [], 1),
+  row('screen', 'frame', 'any', { motion: 'enum:none|slide|fade|push|sheet|zoom' }, [], 1),
   row('modal', 'frame', 'any', {}, [], 1),
   row('sheet', 'frame', 'any', {}, [], 1),
   row('toast', 'frame', 'any', { tone: TONES }, [], 1),
@@ -33,7 +33,7 @@ const rows = [
   row('checkbox', 'control', 'none', {}, ['checked', 'disabled'], 1),
   row('radio', 'control', 'none', {}, ['checked', 'selected', 'disabled'], 1),
   row('toggle', 'control', 'none', {}, ['on', 'disabled'], 1),
-  row('image', 'media', 'none', {}, [], 1),
+  row('image', 'media', 'none', { type: 'enum:photo|chart|map|video|illustration|logo|avatar', ratio: 'enum:16:9|4:3|3:2|1:1|9:16|21:9' }, [], 1),
   row('icon', 'media', 'none', { icon: 'string' }, [], 1),
   row('avatar', 'media', 'none', {}, [], 1),
   row('badge', 'media', 'none', { tone: TONES, icon: 'string' }, ['muted'], 1),

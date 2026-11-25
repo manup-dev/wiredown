@@ -1,6 +1,6 @@
 {
   "name": "wiredown",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "UI screens and flows as markdown: a fenced text format drawn as safe static SVG. A wireframe format made for AI to write.",
   "license": "MIT",
   "repository": { "type": "git", "url": "git+https://github.com/manup-dev/wiredown.git" },
@@ -16,6 +16,7 @@
     ".": { "types": "./src/index.d.ts", "default": "./src/index.js" },
     "./export": { "types": "./src/export/index.d.ts", "default": "./src/export/index.js" },
     "./fences": { "types": "./src/fences.d.ts", "default": "./src/fences.js" },
+    "./icons": { "types": "./src/packs-define.d.ts", "default": "./src/packs-define.js" },
     "./browser": "./browser/auto.js",
     "./wiredown.css": "./wiredown.css",
     "./package.json": "./package.json"

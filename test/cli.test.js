@@ -30,7 +30,7 @@ test('render writes one svg per screen', () => {
   assert.equal(r.status, 0, r.stderr)
   const files = readdirSync(out).filter((f) => f.endsWith('.svg'))
   assert.ok(files.length >= 2)
-  assert.match(readFileSync(join(out, files[0]), 'utf8'), /^<svg /)
+  assert.match(readFileSync(join(out, files[0]), 'utf8'), /^<!-- made by wiredown -->\n<svg /, 'the marker the MCP server writes too')
 })
 
 test('export --to openui|html, contract, usage', () => {
@@ -80,4 +80,45 @@ test('an unknown --format is a usage error; the title is escaped', () => {
   const out = mkdtempSync(join(tmpdir(), 'wm-'))
   assert.equal(run('render', f, '--format', 'html', '--out', out).status, 0)
   assert.match(readFileSync(join(out, 'a&b.html'), 'utf8'), /<title>a&amp;b<\/title>/)
+})
+
+test('animate writes one animated svg; --block picks a fence; --step, --no-credit', () => {
+  const out = mkdtempSync(join(tmpdir(), 'wm-'))
+  const file = join(out, 'flow.svg')
+  const r = run('animate', login, '--out', file)
+  assert.equal(r.status, 0, r.stderr)
+  assert.equal(r.stdout.trim(), file)
+  const svg = readFileSync(file, 'utf8')
+  assert.match(svg, /^<!-- made by wiredown -->\n<svg xmlns="http:\/\/www\.w3\.org\/2000\/svg" /)
+  assert.match(svg, /@keyframes wm-a0/)
+  assert.match(svg, />wiredown<\/text>/)
+  const md = tmpMd('# T\n\n```wiredown\nscreen a "A"\n  button "Go" -> b\nscreen b "B"\n  text "b"\n```\n\n```wiredown\nscreen c "Cee"\n  text "c"\n```\n')
+  const two = join(out, 'two.svg')
+  assert.equal(run('animate', md, '--out', two, '--block', '2', '--step', '1', '--no-credit').status, 0)
+  const text = readFileSync(two, 'utf8')
+  assert.ok(text.includes('>Cee</text>') && !text.includes('>wiredown<'))
+  const first = join(out, 'one.svg')
+  assert.equal(run('animate', md, '--out', first, '--step', '1').status, 0)
+  assert.match(readFileSync(first, 'utf8'), /animation-duration:2s/)
+})
+
+test('animate refuses a bad block number, step or a block that does not parse', () => {
+  const md = tmpMd('```wiredown\nscreen a\n  text "a"\n```\n\n```wiredown\n@device nope\nscreen b\n```\n')
+  const out = join(mkdtempSync(join(tmpdir(), 'wm-')), 'x.svg')
+  assert.match(run('animate', md, '--out', out, '--block', '3').stderr, /--block must be 1 to 2/)
+  assert.equal(run('animate', md, '--out', out, '--block', 'x').status, 2)
+  assert.match(run('animate', md, '--out', out, '--step', '0').stderr, /--step must be/)
+  assert.match(run('animate', md, '--out', out, '--block', '2').stderr, /block 2 does not parse/)
+  assert.equal(run('animate').status, 2)
+  assert.match(run('--help').stdout, /animate <file>/)
+})
+
+test('animate exits 2 when the block is too large to animate', () => {
+  let screen = 'screen a\n'
+  for (let i = 0; i < 1200; i++) screen += `  text "${'字'.repeat(40)}"\n`
+  const f = tmpMd('```wiredown\n@flow a a a a a a a\n' + screen + '```\n')
+  const out = join(mkdtempSync(join(tmpdir(), 'wm-')), 'x.svg')
+  const r = run('animate', f, '--out', out)
+  assert.equal(r.status, 2)
+  assert.match(r.stderr, /block 1 is too large to animate/)
 })

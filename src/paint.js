@@ -44,7 +44,7 @@ export function numberNotes(mock) {
 
 // Which screen "-> back" goes to: the previous screen in @flow, else the one screen that links
 // here (variants count as their base), else for a variant the screen it is a state of; else none.
-function backTarget(mock, i) {
+export function backTarget(mock, i) {
   const screens = mock.screens || [];
   const s = screens[i];
   if (!s) return null;

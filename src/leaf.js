@@ -76,7 +76,10 @@ export function leafSize(n, w) {
   }
   if (k === 'divider') return { h: S.divider };
   if (k === 'spacer') return { h: 0 };
-  if (k === 'image') return { h: S.image, lines: t ? [t] : [] };
+  if (k === 'image') {
+    const [a, b] = String(n.attrs.ratio || '').split(':').map(Number);
+    return { h: a && b ? Math.round(Math.min(800, Math.max(32, (w * b) / a))) : S.image, lines: t ? [t] : [] };
+  }
   if (k === 'avatar') return { h: S.avatar, lines: t ? [t] : [] };
   if (k === 'icon') return { h: S.icon };
   if (k === 'badge') return { h: S.badge, lines: [t] };

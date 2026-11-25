@@ -1,7 +1,10 @@
-// @device @look @title @flow @requires.
+// @device @look @title @flow @icons @motion @requires.
 import { WM_LIMITS } from './limits.js';
 import { resolveDevice } from './devices.js';
 import { err } from './validate.js';
+import { PACK_ID } from './packs.js';
+
+export const MOTIONS = ['none', 'slide', 'fade', 'push', 'sheet', 'zoom'];
 
 function digits(s) {
   if (!s || s.length > 5) return NaN;
@@ -32,6 +35,13 @@ export function readHeader(raw, mock, flowAt, ctx) {
     const ids = rest.filter((t) => t.t === 'word' || t.t === 'link').map((t) => t.v).filter((v) => v !== '');
     if (!ids.length || ids.length !== rest.length) fail('@flow lists screen ids.');
     else { mock.flow = ids; flowAt.line = raw.line; flowAt.col = at.col; }
+  } else if (at.v === 'icons') {
+    const ids = rest.every((t) => t.t === 'word') ? rest.map((t) => t.v).join(' ').split(/[\s,]+/).filter(Boolean) : [];
+    if (ids.length && ids.length <= 8 && ids.every((v) => PACK_ID.test(v))) { mock.icons = ids; mock.iconsAt = { line: raw.line, col: at.col }; }
+    else fail('@icons lists up to 8 icon pack ids.');
+  } else if (at.v === 'motion') {
+    if (one && one.t === 'word' && MOTIONS.includes(one.v)) mock.motion = one.v;
+    else fail('@motion is none, slide, fade, push, sheet or zoom.');
   } else if (at.v === 'requires') {
     const major = one && one.t === 'word' ? digits(one.v.split('.')[0]) : NaN;
     if (!(major >= 1 && major <= 1)) fail('This block needs a newer wiredown (@requires 1).');

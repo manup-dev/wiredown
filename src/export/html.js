@@ -67,7 +67,11 @@ function el(n, d) {
       const role = n.kind === 'toggle' ? ' role="switch"' : '';
       return `${p}<label><input type="${type}"${role}${on}${dis(n)}> ${label(n)}</label>`;
     }
-    case 'image': return `${p}<figure class="image" role="img" aria-label="${label(n)}">${label(n)}</figure>`;
+    case 'image': {
+      const r = typeof n.attrs.ratio === 'string' && /^\d+:\d+$/.test(n.attrs.ratio) && !/^\d+(\.\d+)?$/.test(String(n.attrs.h)) ? ` style="aspect-ratio:${n.attrs.ratio.replace(':', '/')};max-height:800px"` : '';
+      const ty = typeof n.attrs.type === 'string' && /^[a-z]+$/.test(n.attrs.type) ? ` data-type="${n.attrs.type}"` : '';
+      return `${p}<figure class="image" role="img" aria-label="${label(n)}"${ty}${r}>${label(n)}</figure>`;
+    }
     case 'icon': return `${p}<span class="icon" aria-hidden="true">${e(n.attrs.icon ?? n.labels[0] ?? '')}</span>`;
     case 'avatar': return `${p}<span class="avatar" aria-label="${label(n)}">${e((n.labels[0] ?? '').split(/\s+/).map((w) => w[0] ?? '').join('').slice(0, 2))}</span>`;
     case 'badge': return `${p}<span class="badge">${label(n)}</span>`;

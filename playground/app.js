@@ -2,10 +2,12 @@
 // Everything runs in the page: no server, no request. Share links carry the text in the URL hash.
 import { renderMockBlock, parseMock, renderScreenSvg, lintMock, slug, AI_CONTRACT, WIREDOWN_CSS } from '../src/index.js';
 import { toOpenUI, toHTML } from '../src/export/index.js';
-import { encodeShare, decodeShare } from './share.js';
+import { encodeShare, decodeShare, splitPlay } from './share.js';
 import { EXAMPLES } from './examples.js';
 import { initSelect } from './select.js';
 import { initLayout } from './layout.js';
+import { packsFor } from './packs.js';
+import { initPlay } from './play.js';
 
 const $ = (id) => document.getElementById(id);
 const source = $('source'), gutter = $('gutter'), preview = $('preview'), problems = $('problems');
@@ -18,12 +20,17 @@ const store = {
 
 let toastTimer = 0;
 function toast(message) {
+  // Inside an open dialog (the top layer) the page's own toast would be hidden behind it.
+  const host = document.querySelector('dialog[open]') ?? document.body;
+  if (toastEl.parentElement !== host) host.append(toastEl);
   toastEl.hidden = false;
   toastEl.classList.remove('show');
   requestAnimationFrame(() => { toastEl.textContent = message; toastEl.classList.add('show'); });
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => toastEl.classList.remove('show'), 3200);
 }
+// A dialog that closes takes its contents out of view; the toast goes back to the page.
+document.addEventListener('close', (e) => { if (e.target instanceof HTMLDialogElement && e.target.contains(toastEl)) document.body.append(toastEl); }, true);
 
 const info = () => 'wiredown' + (look.value ? ' look=' + look.value : '') + (view.value ? ' view=' + view.value : '');
 
@@ -33,11 +40,12 @@ function render() {
   const text = source.value, inf = info();
   const tpl = document.createElement('template');
   // The library's output is trusted: escaped text, allowlisted SVG, no script.
-  tpl.innerHTML = renderMockBlock(text, inf);
+  const icons = packsFor(text, render);
+  tpl.innerHTML = renderMockBlock(text, inf, { icons });
   preview.replaceChildren(tpl.content);
   parsed = parseMock(text, inf);
-  for (const id of ['svg', 'copysvg', 'html']) $(id).disabled = !parsed.ok;
-  const found = lintMock(text, inf);
+  for (const id of ['svg', 'copysvg', 'html', 'play-open']) $(id).disabled = !parsed.ok;
+  const found = lintMock(text, inf, { icons });
   // Replace the live list only when what it says changed, so a screen reader is not re-read it after every pause.
   const said = JSON.stringify(found.map((p) => [p.line, p.code, p.message, p.severity]));
   if (said !== problems.dataset.said) {
@@ -51,6 +59,7 @@ function render() {
   store.set('wiredown.draft', text);
   layout.decorate();
   select.refresh();
+  if (play?.isOpen) play.repaint(); // an icon pack arrived while the animation was open
 }
 
 function problemItem(p) {
@@ -192,12 +201,13 @@ function prepareShare() {
   encodeShare(text).then((hash) => { if (source.value === text) shareFor = { text, hash }; }, () => {});
 }
 source.addEventListener('input', prepareShare);
+async function shareUrl() {
+  const hash = shareFor.text === source.value ? shareFor.hash : await encodeShare(source.value);
+  return location.origin + location.pathname + '#' + hash;
+}
 $('share').addEventListener('click', async () => {
-  let hash = shareFor.text === source.value ? shareFor.hash : null;
-  if (!hash) {
-    try { hash = await encodeShare(source.value); } catch { toast('Could not make the link in this browser.'); return; }
-  }
-  const url = location.origin + location.pathname + '#' + hash;
+  let url;
+  try { url = await shareUrl(); } catch { toast('Could not make the link in this browser.'); return; }
   if (await copyText(url)) { toast('Link copied'); return; }
   history.replaceState(null, '', url);
   toast('Could not copy the link. Copy it from the address bar.');
@@ -209,13 +219,13 @@ $('ai').addEventListener('click', async () => {
 
 function shownScreen() {
   const fig = preview.querySelector('figure.wm');
-  const el = fig?.querySelector('.wm-screen.is-current') ?? (fig?.classList.contains('wm-proto') ? fig.querySelector('.wm-screen.wm-start') : null) ?? fig?.querySelector('.wm-screen');
+  const el = fig?.querySelector('.wm-screen.wm-current') ?? (fig?.classList.contains('wm-proto') ? fig.querySelector('.wm-screen.wm-start') : null) ?? fig?.querySelector('.wm-screen');
   const i = parsed.mock.screens.findIndex((s) => s.id === el?.dataset.wmScreen);
   return Math.max(0, i);
 }
 function screenSvg() {
   const i = shownScreen();
-  return { name: `${nameBase()}-${parsed.mock.screens[i].id}.svg`, text: renderScreenSvg(parsed.mock, i) };
+  return { name: `${nameBase()}-${parsed.mock.screens[i].id}.svg`, text: renderScreenSvg(parsed.mock, i, 0, packsFor(source.value, render)) };
 }
 $('svg').addEventListener('click', () => { if (!parsed?.ok) return; const s = screenSvg(); download(s.name, 'image/svg+xml', s.text); });
 $('copysvg').addEventListener('click', async () => {
@@ -225,8 +235,20 @@ $('copysvg').addEventListener('click', async () => {
 $('html').addEventListener('click', () => {
   if (!parsed?.ok) return;
   const title = (parsed.mock.title || 'wiredown screens').replace(/[<>&"]/g, (c) => `&#${c.charCodeAt(0)};`);
-  const page = `<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n<title>${title}</title>\n<style>\nbody{margin:24px;font:15px/1.45 system-ui,sans-serif;color:#1b1d21;background:#fff}\n.wm{--wm-bg:#fff}\n${WIREDOWN_CSS}\n</style>\n</head>\n<body>\n${renderMockBlock(source.value, info())}\n</body>\n</html>\n`;
+  const page = `<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n<title>${title}</title>\n<style>\nbody{margin:24px;font:15px/1.45 system-ui,sans-serif;color:#1b1d21;background:#fff}\n.wm{--wm-bg:#fff}\n${WIREDOWN_CSS}\n</style>\n</head>\n<body>\n${renderMockBlock(source.value, info(), { icons: packsFor(source.value, render) })}\n</body>\n</html>\n`;
   download(`${nameBase()}.html`, 'text/html', page);
+});
+
+// ── Play: the flow as a looping animation, with SVG and GIF downloads ──
+const play = initPlay({
+  $, source, info, icons: () => packsFor(source.value, render), nameBase, copyText, download, toast, shareUrl,
+  title: () => (parsed?.ok && parsed.mock.title) || 'wiredown flow',
+});
+$('play-open').addEventListener('click', () => { if (parsed?.ok) play.open(); });
+// P plays while the drawing has focus (not while typing in the editor).
+preview.addEventListener('keydown', (e) => {
+  if (e.key.toLowerCase() !== 'p' || e.ctrlKey || e.metaKey || e.altKey || e.repeat) return;
+  e.preventDefault(); $('play-open').click();
 });
 
 // ── Export tabs (WAI-ARIA tabs: arrows move, Home and End jump) ──
@@ -298,8 +320,9 @@ async function start() {
   const saved = store.get('wiredown.theme');
   setTheme(saved === 'dark' || saved === 'light' ? saved : matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
   fillExamples();
-  let text = null;
+  let text = null, autoplay = false;
   if (location.hash.length > 1) {
+    autoplay = splitPlay(location.hash).play;
     const shared = await decodeShare(location.hash);
     history.replaceState(null, '', location.pathname + location.search);
     if (shared.ok) text = shared.text;
@@ -309,5 +332,6 @@ async function start() {
   render(); intro(); prepareShare();
   const tab = tabs.find((t) => t.id === store.get('wiredown.tab'));
   if (tab) selectTab(tab, false);
+  if (autoplay && text !== null && parsed?.ok) play.open();
 }
 start();

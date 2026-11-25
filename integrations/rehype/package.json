@@ -1,6 +1,6 @@
 {
   "name": "rehype-wiredown",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "rehype plugin: draw wiredown (UI wireframes as markdown) fences as static SVG",
   "license": "MIT",
   "repository": { "type": "git", "url": "git+https://github.com/manup-dev/wiredown.git", "directory": "integrations/rehype" },
@@ -34,7 +34,7 @@
     "docusaurus"
   ],
   "peerDependencies": {
-    "wiredown": "^0.1.0"
+    "wiredown": ">=0.1.0 <0.3.0"
   },
   "dependencies": {
     "@types/hast": "^3.0.5",

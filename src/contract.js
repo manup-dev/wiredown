@@ -1,6 +1,7 @@
 // AI_CONTRACT: what an agent needs to write a wiredown block. Generated from KINDS at import; deterministic.
 import { KINDS } from './kinds.js';
 import { WM_LIMITS } from './limits.js';
+import { ICON_NAMES, ICON_ALIASES } from './icons.js';
 
 export const CONTRACT_EXAMPLE = `@device phone
 @title "Sign in"
@@ -46,10 +47,11 @@ function groups() {
 }
 
 const L = WM_LIMITS;
+const ICON_LIST = [...ICON_NAMES, ...Object.keys(ICON_ALIASES)].sort().join(', ');
 export const AI_CONTRACT = `wiredown: UI screens and flows as markdown. Write one fenced block with the language \`wiredown\` (\`screens\` also works). One block is one flow. It is drawn as static wireframes, so describe structure, not pixels.
 
 GRAMMAR
-Headers first (optional): @device phone|tablet|laptop|desktop|WxH (each side 100..${L.deviceMax}), add fit after it (@device phone fit) to end each screen at its content instead of the full device height (not with a modal, sheet or toast), @look wire|clean, @title "Text", @flow a b c (screen ids in order), @requires.
+Headers first (optional): @device phone|tablet|laptop|desktop|WxH (each side 100..${L.deviceMax}), add fit after it (@device phone fit) to end each screen at its content instead of the full device height (not with a modal, sheet or toast), @look wire|clean, @title "Text", @flow a b c (screen ids in order), @motion slide|fade|push|sheet|zoom (prototype view; screen motion=), @requires.
 screen <id> "Label"    a screen; indent its elements by 2 or 4 spaces (one step per level, spaces only).
 variant <id> of <screen> "Label"    a copy of a screen; indented lines are patches: #id attr=value flag hide (no labels, no children).
 define <name> <param or param=default>...    a reusable element, declared above its first use; labels and values in its indented body may write $param. Use it like a kind: name "first" "second" param=value.
@@ -62,7 +64,9 @@ w and h take a number, fill or hug. pad, gap, grow and span are numbers. align i
 
 KINDS (labels, children, own attributes, flags)
 ${groups()}
-Other attribute values: type is text|password|email|number|search|tel|url; tone is good|bad|warn|info; options="a, b" for a select; cols="A, B" for a table, or a number 1-12 for a grid; icon=name; placeholder="text"; error="text"; rows=number. Colours are never set by you; the look decides.
+Other attribute values: type on an input is text|password|email|number|search|tel|url; on an image it is photo|chart|map|video|illustration|logo|avatar, with ratio 16:9|4:3|3:2|1:1|9:16|21:9; tone is good|bad|warn|info; options="a, b" for a select; cols="A, B" for a table, or a number 1-12 for a grid; icon=name; placeholder="text"; error="text"; rows=number. Colours are never set by you; the look decides.
+Icons (icon=name or icon "name"): ${ICON_LIST}. Use one of these; Lucide names outside the list draw as a placeholder.
+With an icon pack loaded (@icons lucide | tabler | heroicons), any of its names works, or prefix one name: icon "tabler:brand-figma".
 
 EXAMPLE
 \`\`\`wiredown
@@ -82,4 +86,4 @@ LIMITS
 Body ${L.body} characters, ${L.lines} lines, ${L.lineLength} characters per line, ${L.tokensPerLine} tokens per line, ${L.screens} screens, ${L.variants} variants, ${L.nodes} elements after defines expand, ${L.depth} levels of nesting, ${L.defines} defines.
 
 CHECK YOUR WORK
-Run lint_doc on the document. It reports each problem with a line number and a code; fix every error before you finish. To change one element later, edit only its line.`;
+Check the block with your lint tool (lint_wiredown or lint_doc over MCP, or wiredown lint <file>). It reports each problem with a line number and a code; fix every error before you finish. To change one element later, edit only its line.`;

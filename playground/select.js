@@ -183,8 +183,8 @@ export function initSelect({ preview, source, info, isOk, onReveal }) {
     if (!target || !fig) return;
     onReveal(target.dataset.wmScreen);
     if (fig.classList.contains('wm-proto')) {
-      fig.querySelectorAll('.wm-screen.is-current').forEach((s) => s.classList.remove('is-current'));
-      target.classList.add('is-current');
+      fig.querySelectorAll('.wm-screen.wm-current').forEach((s) => s.classList.remove('wm-current'));
+      target.classList.add('wm-current');
       fig.dataset.wmCurrent = target.dataset.wmScreen;
     }
     target.scrollIntoView({ block: 'start', inline: 'nearest', behavior: reduced() ? 'auto' : 'smooth' });

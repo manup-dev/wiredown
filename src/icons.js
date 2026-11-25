@@ -20,6 +20,7 @@
 // NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE
 // OF THIS SOFTWARE.
 import { dec1 } from './escape.js';
+import data1 from './icons-data-1.js';
 
 const circ = (cx, cy, r) => `M${cx - r} ${cy}a${r} ${r} 0 1 0 ${2 * r} 0a${r} ${r} 0 1 0 ${-2 * r} 0`;
 const rect = (x, y, w, h, rx) =>
@@ -27,7 +28,8 @@ const rect = (x, y, w, h, rx) =>
   `h${-(w - 2 * rx)}a${rx} ${rx} 0 0 1 ${-rx} ${-rx}v${-(h - 2 * rx)}a${rx} ${rx} 0 0 1 ${rx} ${-rx}z`;
 const TRAY = 'M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4';
 
-export const ICONS = Object.freeze({
+// Hand-kept icons win over generated ones of the same name (goldens).
+const OWN = {
   home: 'M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM9 22V12h6v10',
   users: 'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2' + circ(9, 7, 4) + 'M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75',
   settings: 'M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73' +
@@ -68,16 +70,55 @@ export const ICONS = Object.freeze({
     '-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4M9 18c-4.51 2-5-2-7-2',
   image: rect(3, 3, 18, 18, 2) + circ(9, 9, 2) + 'M21 15l-3.09-3.09a2 2 0 0 0-2.82 0L6 21',
   file: 'M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7zM14 2v4a2 2 0 0 0 2 2h4',
-});
+};
+
+export const ICONS = Object.freeze({ ...data1, ...OWN });
 
 // The icon names in sorted order (code-unit order), for a host's icon picker.
 export const ICON_NAMES = Object.freeze(Object.keys(ICONS).sort());
 
-export const hasIcon = (name) => typeof name === 'string' && Object.prototype.hasOwnProperty.call(ICONS, name);
+export const has = (o, k) => typeof k === 'string' && Object.prototype.hasOwnProperty.call(o, k);
+
+// Aliases never shadow an icon or point at a missing one.
+const WANTED = {
+  home: 'house', gear: 'settings', delete: 'trash-2', trash: 'trash-2', close: 'x', profile: 'user',
+  cart: 'shopping-cart', cog: 'settings', notifications: 'bell', chat: 'message-circle', help: 'circle-help',
+  warning: 'circle-alert', error: 'x-circle', success: 'check-circle', logout: 'log-out', login: 'log-in',
+};
+export const ICON_ALIASES = Object.freeze(Object.fromEntries(
+  Object.entries(WANTED).filter(([a, t]) => !has(ICONS, a) && has(ICONS, t)),
+));
+
+export const hasIcon = (name) => has(ICONS, name) || has(ICON_ALIASES, name);
+
+function distance(a, b) {
+  let prev = Array.from({ length: b.length + 1 }, (_, j) => j);
+  for (let i = 1; i <= a.length; i++) {
+    const cur = [i];
+    for (let j = 1; j <= b.length; j++) cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+    prev = cur;
+  }
+  return prev[b.length];
+}
+
+/** The closest name in `names` (edit distance <= 2, else a prefix match of 3+ letters), or null. */
+export function nearestIcon(name, names = ICON_NAMES) {
+  const n = String(name).toLowerCase().slice(0, 64);
+  let best = null;
+  let bestScore = Infinity;
+  for (const c of names) {
+    let score = Infinity;
+    const d = distance(n, c);
+    if (d <= 2) score = d;
+    else if (Math.min(n.length, c.length) >= 3 && (n.startsWith(c) || c.startsWith(n))) score = 3 + Math.abs(n.length - c.length);
+    if (score < bestScore) { best = c; bestScore = score; }
+  }
+  return best;
+}
 
 const ARITY = { m: 2, l: 2, h: 1, v: 1, c: 6, s: 4, q: 4, t: 2, a: 7, z: 0 };
 
-// Tokenize trusted path data: command letters and numbers (a second '.' starts a new number).
+// Command letters and numbers (a second '.' starts a number; 2e3 is one number).
 function tokens(d) {
   const out = [];
   let i = 0;
@@ -88,7 +129,13 @@ function tokens(d) {
       let j = i + (ch === '-' ? 1 : 0);
       let dot = false;
       while (j < d.length && ((d[j] >= '0' && d[j] <= '9') || (d[j] === '.' && !dot))) { if (d[j] === '.') dot = true; j++; }
-      out.push(Number(d.slice(i, j)));
+      if ((d[j] === 'e' || d[j] === 'E') && j > i) {
+        let k = j + 1;
+        if (d[k] === '-' || d[k] === '+') k++;
+        if (d[k] >= '0' && d[k] <= '9') { while (d[k] >= '0' && d[k] <= '9') k++; j = k; }
+      }
+      const v = Number(d.slice(i, j));
+      out.push(Number.isFinite(v) ? Math.max(-1e6, Math.min(1e6, v)) : 0);
       i = j;
       continue;
     }
@@ -109,28 +156,43 @@ function role(cmd, k) {
 /** Icon path data placed at (x, y) and scaled to `size`, one decimal; null for an unknown name. */
 export function iconPath(name, x, y, size) {
   if (!hasIcon(name)) return null;
-  const s = size / 24;
-  const tk = tokens(ICONS[name]);
+  return pathFromD(has(ICONS, name) ? ICONS[name] : ICONS[ICON_ALIASES[name]], x, y, size);
+}
+
+const MAX_D = 20000;
+const MAX_PARTS = 4000;
+
+/** Path data on the 24 grid placed at (x, y), scaled to `size`. Total: known commands and finite numbers only. */
+export function pathFromD(d, x, y, size) {
+  if (typeof d !== 'string') return '';
+  x = Number.isFinite(Number(x)) ? Number(x) : 0;
+  y = Number.isFinite(Number(y)) ? Number(y) : 0;
+  const s = (Number.isFinite(Number(size)) ? Number(size) : 24) / 24;
+  const tk = tokens(d.length > MAX_D ? d.slice(0, MAX_D) : d);
   const parts = [];
   let i = 0;
   while (i < tk.length) {
     let cmd = tk[i++];
     if (typeof cmd !== 'string') continue;
+    const lead = cmd === 'm' && !parts.length; // absolute, its pairs relative
+    if (lead) cmd = 'M';
     const n = ARITY[cmd.toLowerCase()];
+    if (n === undefined) continue;
+    if (parts.length >= MAX_PARTS) break;
     if (n === 0) { parts.push('z'); continue; }
-    while (i < tk.length && typeof tk[i] === 'number') {
+    while (i < tk.length && typeof tk[i] === 'number' && parts.length < MAX_PARTS) {
       const rel = cmd === cmd.toLowerCase();
       const vals = [];
       for (let k = 0; k < n; k++) {
         const v = Number(tk[i++]) || 0;
         const r = role(cmd, k);
-        if (r === 'keep') vals.push(String(v));
+        if (r === 'keep') vals.push(String(Math.round(v)));
         else if (r === 'len' || rel) vals.push(dec1(v * s));
         else vals.push(dec1(r === 'x' ? x + v * s : y + v * s));
       }
       // every group names its command; pairs after a moveto are linetos
       parts.push(cmd + vals.join(' '));
-      if (cmd === 'm') cmd = 'l';
+      if (cmd === 'm' || lead) cmd = 'l';
       else if (cmd === 'M') cmd = 'L';
     }
   }

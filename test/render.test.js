@@ -176,7 +176,7 @@ test('WIREDOWN_CSS: layout and prototype rules only, all scoped to .wm', () => {
   assert.ok(WIREDOWN_CSS.includes('.wm.wm-proto .wm-strip,.wm.wm-proto .wm-variants{display:block}'));
   for (const rule of WIREDOWN_CSS.split('}').map((r) => r.trim()).filter(Boolean)) {
     const sel = rule.slice(0, rule.indexOf('{'));
-    for (const part of sel.split(',')) assert.match(part.trim(), /^\.wm($|[\s.:-])/, part);
+    for (const part of sel.split(',')) assert.match(part.trim(), /^(\.wm($|[\s.:-])|@keyframes wm-[a-z]+$|@media \(prefers-reduced-motion:reduce\)$)/, part);
   }
   assert.ok(!/color|background|fill|stroke|url\(|@import|border/i.test(WIREDOWN_CSS));
 });

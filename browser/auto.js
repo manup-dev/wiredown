@@ -3,7 +3,9 @@
 // Add data-wiredown-manual to the script tag to call render() yourself.
 // blockIndex keeps drawn ids unique across blocks on one page.
 // Imports only ../src/index.js (relative) so it works unbuilt from a CDN.
-import { renderMockBlock } from '../src/index.js';
+import { renderMockBlock, isIconPack } from '../src/index.js';
+
+const packsFrom = (opts) => { try { return opts && Array.isArray(opts.icons) ? opts.icons.filter(isIconPack) : []; } catch { return []; } };
 
 // `wiremark` was the format's first name; pages that still use it keep drawing.
 const LANGS = ['wiredown', 'screens', 'wiremark'];
@@ -18,7 +20,7 @@ function addStyles(doc) {
   doc.head.appendChild(link);
 }
 
-export function render(root = document) {
+export function render(root = document, opts = {}) {
   const doc = root.ownerDocument ?? root;
   let n = 0;
   for (const el of root.querySelectorAll(SELECTOR)) {
@@ -31,7 +33,7 @@ export function render(root = document) {
     const info = (code.getAttribute('data-meta') || pre.getAttribute('data-meta') || 'wiredown').trim();
     const tpl = doc.createElement('template');
     // The library's output is trusted: escaped text, allowlisted SVG, no script.
-    tpl.innerHTML = renderMockBlock(code.textContent ?? '', info, { blockIndex: count++ });
+    tpl.innerHTML = renderMockBlock(code.textContent ?? '', info, { blockIndex: count++, icons: packsFrom(opts) });
     pre.replaceWith(tpl.content);
     n++;
   }

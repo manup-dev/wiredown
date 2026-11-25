@@ -4,6 +4,7 @@
 import { renderMockBlock } from './render.js';
 import { messageCard, MSG } from './card.js';
 import { mockDigest } from './digest.js';
+import { packsFrom } from './packs.js';
 
 export const MAX_BLOCKS_PER_DOC = 50;
 
@@ -40,7 +41,7 @@ export function wiredownPlugin(md, opts = {}) {
     // env.wmMode === 'digest': a host that only needs what a render depends on (never serves the
     // HTML) gets an empty figure carrying the block digest, at the cost of one hash.
     if (scope.wmMode === 'digest') return defer(scope, `<figure class="wm" data-wm-digest="${mockDigest(t.content, t.info)}"></figure>`);
-    const html = n >= MAX_BLOCKS_PER_DOC ? messageCard(MSG.tooMany) : renderMockBlock(t.content, t.info, { blockIndex });
+    const html = n >= MAX_BLOCKS_PER_DOC ? messageCard(MSG.tooMany) : renderMockBlock(t.content, t.info, { blockIndex, icons: packsFrom(opts) });
     return defer(scope, html);
   };
 }

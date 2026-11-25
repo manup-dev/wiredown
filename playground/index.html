@@ -48,6 +48,7 @@
     <div class="viewbar">
       <nav id="screens-nav" aria-label="Jump to a screen" hidden></nav>
       <span class="viewbar-gap"></span>
+      <button id="play-open" type="button" class="play-btn" aria-keyshortcuts="p" title="Play the flow as an animation (P)">Play</button>
       <button id="fold-all" type="button" class="quiet" hidden>Fold all</button>
       <div class="zoom" role="group" aria-label="Zoom">
         <button id="zoom-out" type="button" aria-label="Zoom out" title="Zoom out (Ctrl or ⌘ and -)">−</button>
@@ -68,6 +69,27 @@
   </section>
 </main>
 <footer>MIT · <a href="https://github.com/REPO">GitHub</a> · Built by <a href="https://reph.dev/?ref=wiredown">reph</a>, where specs and screens live together</footer>
+<dialog id="play" aria-labelledby="play-title" aria-describedby="play-steps">
+  <div class="play-head">
+    <h2 id="play-title">Play the flow</h2>
+    <button id="play-close" type="button" class="quiet" aria-label="Close">Close</button>
+  </div>
+  <p id="play-steps" class="play-steps"></p>
+  <div class="play-stage"><img id="play-img" alt=""></div>
+  <p id="play-note" class="play-note" hidden>Your system asks for less motion, so this shows the first screen. The downloads still move.</p>
+  <div class="play-actions">
+    <button id="play-svg" type="button" class="primary">Download SVG</button>
+    <button id="play-gif" type="button">Download GIF</button>
+    <button id="play-readme" type="button">Copy README snippet</button>
+    <button id="play-link" type="button">Copy link that plays</button>
+  </div>
+  <div id="play-progress" class="play-progress" hidden>
+    <progress id="play-bar" max="1" value="0" aria-label="GIF progress"></progress>
+    <span id="play-status" role="status"></span>
+    <button id="play-cancel" type="button" class="quiet">Cancel</button>
+  </div>
+  <p class="play-hint">The SVG plays inside a GitHub README with no script. Commit it next to the README and paste the snippet.</p>
+</dialog>
 <p id="toast" role="status" aria-live="polite" hidden></p>
 </body>
 </html>

@@ -1,0 +1,79 @@
+@device phone fit
+@look clean
+@title "Shop checkout"
+@motion push
+screen product "Product"
+  navbar "Trail runner" back
+  stack pad=20 gap=12
+    image "Trail runner, blue" type=photo ratio=4:3
+    row justify=between
+      h2 "Trail runner"
+      h2 "$89"
+    row gap=6
+      icon "star"
+      text "4.0 · 312 reviews" muted
+    select "Size" options="40, 41, 42, 43, 44" placeholder="Choose a size"
+    button "Add to cart" primary w=fill icon=shopping-cart -> cart
+    button "Save for later" icon=heart w=fill
+
+screen cart "Cart"
+  navbar "Cart (2)" back -> product
+  stack pad=20 gap=12
+    card
+      row gap=12
+        image "Shoe" type=photo ratio=1:1 w=72
+        stack gap=2 grow=1
+          h3 "Trail runner"
+          text "Size 42 · Blue" muted
+        text "$89.00"
+    card
+      row gap=12
+        image "Socks" type=photo ratio=1:1 w=72
+        stack gap=2 grow=1
+          h3 "Wool socks"
+          text "Pack of 3" muted
+        text "$18.00"
+    input "Promo code" placeholder="SPRING10"
+    row justify=between
+      text "Delivery" muted
+      text "Free, arrives Friday" muted
+    row justify=between
+      h3 "Total"
+      h3 "$107.00"
+    button "Checkout" primary w=fill icon=lock -> pay
+
+screen pay "Pay" motion=sheet
+  navbar "Payment" back -> cart
+  stack pad=20 gap=12
+    card
+      row justify=between
+        text "Trail runner, Wool socks" muted
+        h3 "$107.00"
+      text "Ships to 12 Rua Augusta, Lisbon" muted
+    button "Pay with Apple Pay" icon=apple w=fill
+    divider
+    input "Card number" placeholder="1234 5678 9012 3456"
+    row gap=12
+      input "Expiry" placeholder="MM/YY" w=fill
+      input "CVC" w=fill
+    checkbox "Save this card for next time" checked
+    button "Pay $107.00" primary w=fill -> done note="Shows a spinner while the bank confirms"
+
+screen done "Order placed" motion=zoom
+  stack pad=24 gap=16 align=center
+    icon "check-circle"
+    h1 "Thank you" align=center
+    text "Order 4821 arrives on Friday. The receipt is in your inbox." align=center muted
+    card w=fill
+      row gap=12
+        image "Shoe" type=photo ratio=1:1 w=56
+        stack gap=2 grow=1
+          h3 "Trail runner"
+          text "Size 42 · Blue" muted
+      row gap=12
+        image "Socks" type=photo ratio=1:1 w=56
+        stack gap=2 grow=1
+          h3 "Wool socks"
+          text "Pack of 3" muted
+    button "Track order" primary w=fill
+    link "Keep shopping" -> product

@@ -1,4 +1,4 @@
-// Product flows for the gallery: a dashboard in its four states, an invite, an upgrade.
+// Product flows for the gallery: a dashboard in its four states, an upgrade.
 // Plain strings: the page runs unbuilt, so no file reads.
 
 const DASHBOARD_STATES = `@device desktop
@@ -55,49 +55,6 @@ screen new-project "New project"
     row gap=8 justify=end
       button "Cancel" -> projects
       button "Create project" primary -> projects`;
-
-const TEAM_INVITE = `@device laptop
-@look clean
-@title "Invite your team"
-screen members "Members"
-  navbar "Workspace settings"
-  stack pad=24 gap=16
-    row justify=between
-      h2 "Members · 3 of 5 seats"
-      button "Invite people" primary icon=plus -> invite #invite-btn
-    list
-      item "Ada Lovelace" "Admin" icon=user
-      item "Grace Hopper" "Member" icon=user
-      item "Linus Torvalds" "Viewer" icon=user
-    text "Admins manage billing and members. Viewers can read and comment." muted
-
-screen invite "Invite people"
-  navbar "Workspace settings"
-  stack pad=24 gap=16
-    h2 "Members · 3 of 5 seats"
-  modal "Invite people"
-    textarea "Email addresses" placeholder="name@acme.com, another@acme.com" rows=3 #emails note="Comma or new line separated; suggest co-workers as you type"
-    select "Role" options="Member, Viewer, Admin" #role
-    checkbox "Send a welcome email" checked
-    text "2 seats left. Inviting more asks an admin to add seats." muted #seats
-    row gap=8 justify=end
-      button "Cancel" -> members
-      button "Send invites" primary -> sent #send
-
-variant invite-over of invite "Over the seat limit"
-  #emails error="You can invite 2 more people on this plan"
-  #send disabled
-
-screen sent "Invites sent"
-  stack pad=24 gap=16
-    h2 "Members · 5 of 5 seats"
-    list
-      item "Ada Lovelace" "Admin" icon=user
-      item "Grace Hopper" "Member" icon=user
-      item "Linus Torvalds" "Viewer" icon=user
-      item "kay@acme.com" "Invited · Member" icon=mail muted
-      item "alan@acme.com" "Invited · Member" icon=mail muted
-  toast "2 invites sent" tone=good`;
 
 const UPGRADE_PAYWALL = `@device desktop
 @look clean
@@ -167,6 +124,5 @@ screen upgraded "Upgraded"
 
 export const PRODUCT = [
   { id: 'dashboard-states', label: 'Dashboard: empty, loading, no results', body: DASHBOARD_STATES },
-  { id: 'team-invite', label: 'Invite a teammate', body: TEAM_INVITE },
   { id: 'upgrade-paywall', label: 'Upgrade at the limit', body: UPGRADE_PAYWALL },
 ];

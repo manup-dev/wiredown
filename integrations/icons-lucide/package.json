@@ -1,0 +1,49 @@
+{
+  "name": "wiredown-icons-lucide",
+  "version": "0.1.1",
+  "description": "Every Lucide icon as a wiredown icon pack",
+  "license": "(MIT AND ISC)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/manup-dev/wiredown.git",
+    "directory": "integrations/icons-lucide"
+  },
+  "homepage": "https://github.com/manup-dev/wiredown/tree/main/integrations/icons-lucide",
+  "bugs": {
+    "url": "https://github.com/manup-dev/wiredown/issues"
+  },
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "default": "./index.js"
+    }
+  },
+  "files": [
+    "index.js",
+    "icons.js",
+    "index.d.ts",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "wiredown",
+    "icons",
+    "icon-pack",
+    "lucide"
+  ],
+  "peerDependencies": {
+    "wiredown": ">=0.2.0"
+  },
+  "devDependencies": {
+    "lucide-static": "1.72.0",
+    "wiredown": "file:../.."
+  },
+  "scripts": {
+    "build": "node build.mjs",
+    "test": "node --test test/*.test.mjs"
+  }
+}

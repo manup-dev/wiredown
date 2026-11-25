@@ -1,4 +1,5 @@
-// Share links: the text deflate-raw compressed into the URL hash. No server sees it.
+// Share links: the text deflate-raw compressed into the URL hash. No server sees it. `#v1:<data>!play`
+// is the same link that also opens the Play panel.
 // WM_LIMITS.body counts UTF-16 units (as the core does). The stream is capped at body * 3 bytes (the UTF-8 maximum
 // for that many units), then the decoded text length is checked against the real limit.
 const MAX_PAYLOAD = 300000;
@@ -25,8 +26,15 @@ export async function encodeShare(text) {
   return 'v1:' + b64url(await pipe(new TextEncoder().encode(text), new CompressionStream('deflate-raw')));
 }
 
-export async function decodeShare(hash) {
+/** A link may end in `!play`: open the Play panel once the text is in. */
+export const PLAY_SUFFIX = '!play';
+export function splitPlay(hash) {
   const h = String(hash ?? '').replace(/^#/, '');
+  return h.endsWith(PLAY_SUFFIX) ? { hash: h.slice(0, -PLAY_SUFFIX.length), play: true } : { hash: h, play: false };
+}
+
+export async function decodeShare(hash) {
+  const h = splitPlay(hash).hash;
   if (!/^v1:[A-Za-z0-9_-]+$/.test(h)) return { ok: false, reason: h.startsWith('v1:') ? 'corrupt' : 'format' };
   if (h.length > MAX_PAYLOAD) return { ok: false, reason: 'too_large' };
   try {

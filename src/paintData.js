@@ -9,6 +9,8 @@ import { colsOf } from './leaf.js';
 const clean = (ctx) => ctx.look.name === 'clean';
 const MAX_ROWS = 200;
 
+const GLYPH = { illustration: 'star', avatar: 'user' };
+
 function image(b, ctx) {
   const ops = [{ op: 'rect', ...inset(b, 1), r: ctx.look.radius.control, fill: 'faint', stroke: 'line' }];
   // the classic placeholder cross in wire; clean keeps just the picture glyph and caption
@@ -16,10 +18,23 @@ function image(b, ctx) {
   const t = label(b.node);
   const cx = b.x + b.w / 2;
   const cy = b.y + b.h / 2;
-  if (b.h >= 56 && b.w >= 48) ops.push({ op: 'icon', name: 'image', x: cx - 12, y: cy - 12 - (t ? 9 : 0), size: 24, tone: 'muted' });
+  const ty = b.node.attrs.type;
+  if (ty === 'video' && b.h >= 56 && b.w >= 48) {
+    ops.push({ op: 'circle', cx, cy: cy - (t ? 9 : 0), r: 14, fill: 'soft', stroke: 'muted' });
+    const px = cx - 3;
+    const py = cy - (t ? 9 : 0);
+    ops.push({ op: 'path', d: `M${px} ${py - 6}L${px + 9} ${py}L${px} ${py + 6}Z`, fill: 'muted' });
+  } else if (b.h >= 56 && b.w >= 48 && (ty === 'chart' || ty === 'map' || ty === 'logo')) {
+    const y0 = cy + 10 - (t ? 9 : 0);
+    const x0 = cx - 12;
+    if (ty === 'chart') ops.push(...[0, 1, 2].map((i) => ({ op: 'rect', x: x0 + i * 9, y: y0 - 8 - i * 5, w: 6, h: 8 + i * 5, r: 1, fill: 'muted' })), { op: 'path', d: `M${x0 - 2} ${y0 + 1}h28`, stroke: 'muted', sw: 2 });
+    else if (ty === 'map') ops.push({ op: 'path', d: `M${x0} ${y0 - 18}l8 3l8 -3l8 3v18l-8 -3l-8 3l-8 -3zM${x0 + 8} ${y0 - 15}v18M${x0 + 16} ${y0 - 18}v18`, stroke: 'muted', sw: 2 });
+    else ops.push({ op: 'rect', x: x0, y: y0 - 22, w: 24, h: 24, r: 7, fill: 'muted' });
+  } else if (b.h >= 56 && b.w >= 48) ops.push({ op: 'icon', name: GLYPH[ty] || 'image', x: cx - 12, y: cy - 12 - (t ? 9 : 0), size: 24, tone: 'muted' });
   if (t && b.h >= 40) {
     ops.push(...textBlock([fit(t, FONT.small, b.w - 16, 'bold')], { x: b.x, y: cy + (b.h >= 56 ? 6 : -9), w: b.w, size: FONT.small, lh: LINE.small, weight: 600, tone: 'muted', align: 'center' }));
   }
+  if (ty === 'video' && b.h >= (t ? 72 : 24)) ops.push({ op: 'rect', x: b.x + 8, y: b.y + b.h - 8, w: Math.max(0, b.w - 16), h: 2, r: 1, fill: 'hair' }, { op: 'rect', x: b.x + 8, y: b.y + b.h - 8, w: Math.max(0, (b.w - 16) / 3), h: 2, r: 1, fill: 'muted' });
   return ops;
 }
 

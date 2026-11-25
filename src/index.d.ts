@@ -76,21 +76,44 @@ export const LOOKS: Readonly<Record<'wire' | 'clean', unknown>>;
 export const ICONS: Readonly<Record<string, string>>;
 export function hasIcon(name: unknown): boolean;
 export function iconPath(name: string, x: number, y: number, size: number): string | null;
+/** Trusted path data on a 24-unit grid, placed at (x, y) and scaled to `size`. */
+export function pathFromD(d: string, x: number, y: number, size: number): string;
+/**
+ * An icon pack made by `defineIconPack` from `wiredown/icons`: frozen, and the only kind the renderers accept.
+ * Pass packs as `opts.icons`; `p:name` draws from pack `p`, and a block's `@icons p, q` header lets bare names
+ * read those packs first. Anything that is not a pack made by the same copy of wiredown is ignored.
+ */
+export interface IconPack {
+  readonly id: string;
+  readonly name: string;
+  readonly version: string;
+  readonly license?: string;
+  readonly url?: string;
+  readonly strokeWidth?: number;
+  readonly icons: Readonly<Record<string, string>>;
+}
+export function isIconPack(value: unknown): value is IconPack;
+/** `lucide@0.1.0,tabler@0.1.0` (ids sorted). A host that caches rendered output adds this to its cache key. */
+export function iconPacksKey(packs: readonly unknown[]): string;
+/** Other names that resolve to a built-in icon (home is house, and so on). */
+export const ICON_ALIASES: Readonly<Record<string, string>>;
+/** The closest icon name (edit distance 2 or a prefix), or null. */
+export function nearestIcon(name: string, names?: readonly string[]): string | null;
 /** Note numbers 1, 2, … in source order across the block; a variant's copy keeps its source number. */
 export function numberNotes(mock: Mock): Map<WmNode, number>;
 export function paintScreen(layout: WmLayout, mock: Mock, screenIndex: number, blockIndex?: number): Op[];
 export function serializeScreen(ops: Op[], opts: { width: number; height: number; title: string; blockIndex: number; screenId: string; look: 'wire' | 'clean' }): string;
 /** layoutScreen + paintScreen + serializeScreen for mock.screens[screenIndex]. */
-export function renderScreenSvg(mock: Mock, screenIndex: number, blockIndex?: number): string;
+export function renderScreenSvg(mock: Mock, screenIndex: number, blockIndex?: number, icons?: readonly IconPack[]): string;
 
 /** Storyboard order: groups of screen indexes (a base screen, then its variants), `start` = the prototype's first screen (-1 when none). */
 export function storyboard(mock: Mock): { groups: number[][]; start: number };
 /** The block index as the serializer reads it: an integer 0..9999, else 0. */
 export function blockIndexOf(value: unknown): number;
 /** One <figure class="wm …">: screens strip, notes legend, text outline; or an error card (empty, too large, not drawable). */
-export function renderMockHtml(mock: Mock, opts?: { blockIndex?: number; digest?: string }): string;
+export function renderMockHtml(mock: Mock, opts?: { blockIndex?: number; digest?: string; icons?: readonly IconPack[] }): string;
 /** Fence body + info string → figure HTML or an error card. Never throws. */
-export function renderMockBlock(body: string, info?: string, opts?: { blockIndex?: number }): string;
+export function renderMockBlock(body: string, info?: string, opts?: { blockIndex?: number; icons?: readonly IconPack[] }): string;
 /** `<div class="wm wm-error" role="note">`: one problem inline, several as a list of up to 5. A line below 1 prints the message alone. */
 export function renderErrorCard(errors: ReadonlyArray<{ line?: number; message?: string }> | null | undefined): string;
 /** Layout and prototype-view rules for hosts with a stylesheet, every selector under `.wm`. Never paint. */
@@ -111,11 +134,12 @@ export function isWiredownLang(lang: string): boolean;
  * (a non-negative integer, clamped to 9999; anything else is 0) per page: each block's index
  * is `min(wmBase + its number in this parse, 9999)`, so ids and links never repeat.
  * `env.wmMode === 'digest'` emits only `<figure class="wm" data-wm-digest="{mockDigest}"></figure>`
- * per block, for a host that computes from a render but never serves its HTML.
+ * per block, for a host that computes from a render but never serves its HTML. The digest leaves out the icon
+ * packs, so a host caching by it adds `iconPacksKey(opts.icons)` to the key.
  */
 export function wiredownPlugin(
   md: { renderer: { rules: { fence?: (tokens: any[], idx: number, options: any, env: any, self: any) => string } } },
-  opts?: { defer?: (env: any, html: string) => string },
+  opts?: { defer?: (env: any, html: string) => string; icons?: readonly IconPack[] },
 ): void;
 export const WM_RENDER_VERSION: 1;
 /** 64-bit FNV-1a in two 32-bit lanes, 16 hex characters. */
@@ -123,12 +147,15 @@ export function fnv1a64(s: string): string;
 /** The recognised info keys in fixed order (look=, then view=; last occurrence wins; view=stack dropped). */
 export function infoAttrs(info: unknown): string;
 /** fnv1a64(WM_RENDER_VERSION + '\0' + body), plus '\0' + infoAttrs(info) when it is not empty. */
-/** Excludes the block index, which the HTML embeds in ids/hrefs: never cache figure HTML across positions by digest alone. */
+/**
+ * Excludes the block index, which the HTML embeds in ids/hrefs: never cache figure HTML across positions by digest alone.
+ * Excludes the icon packs too: a host that caches output rendered with `opts.icons` adds `iconPacksKey(packs)` to its key.
+ */
 export function mockDigest(body: string, info?: string): string;
 
 export interface WmLint extends WmError { severity: 'error' | 'warning' }
 /** parseMock's errors and warnings with a severity; unknown_kind, unknown_attr and dangling_link are errors; unknown info words are `unknown_info` warnings at line 0. At most 50. */
-export function lintMock(body: string, info?: string): WmLint[];
+export function lintMock(body: string, info?: string, opts?: { icons?: readonly IconPack[] }): WmLint[];
 /** The language reference for agents (3,000 to 7,000 characters), generated from KINDS. */
 export const AI_CONTRACT: string;
 /** A place for an added or moved element: before or after an element, or into a container (`at`

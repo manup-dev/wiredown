@@ -1,0 +1,49 @@
+{
+  "name": "wiredown-icons-heroicons",
+  "version": "0.1.1",
+  "description": "Every Heroicons 24 outline icon as a wiredown icon pack",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/manup-dev/wiredown.git",
+    "directory": "integrations/icons-heroicons"
+  },
+  "homepage": "https://github.com/manup-dev/wiredown/tree/main/integrations/icons-heroicons",
+  "bugs": {
+    "url": "https://github.com/manup-dev/wiredown/issues"
+  },
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "default": "./index.js"
+    }
+  },
+  "files": [
+    "index.js",
+    "icons.js",
+    "index.d.ts",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "wiredown",
+    "icons",
+    "icon-pack",
+    "heroicons"
+  ],
+  "peerDependencies": {
+    "wiredown": ">=0.2.0"
+  },
+  "devDependencies": {
+    "heroicons": "2.2.0",
+    "wiredown": "file:../.."
+  },
+  "scripts": {
+    "build": "node build.mjs",
+    "test": "node --test test/*.test.mjs"
+  }
+}

@@ -1,6 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { encodeShare, decodeShare } from '../share.js'
+import { encodeShare, decodeShare, splitPlay, PLAY_SUFFIX } from '../share.js'
 
 test('round trip, unicode included', async () => {
   const text = 'screen a "Café ✓ 日本"\n  button "Go"\n'
@@ -40,4 +40,14 @@ test('invalid utf-8, truncated hash, deflate bomb, huge payload', async () => {
   assert.equal((await decodeShare(h.slice(0, h.length - 8))).reason, 'corrupt')
   assert.equal((await decodeShare(await raw(new Uint8Array(50_000_000).fill(97)))).reason, 'too_large')
   assert.equal((await decodeShare('v1:' + 'A'.repeat(300001))).reason, 'too_large')
+})
+
+test('a trailing !play asks for the Play panel; the text decodes the same', async () => {
+  const text = 'screen a "A"\n  button "Go" -> b\nscreen b "B"\n'
+  const h = await encodeShare(text)
+  assert.deepEqual(splitPlay('#' + h + PLAY_SUFFIX), { hash: h, play: true })
+  assert.deepEqual(splitPlay('#' + h), { hash: h, play: false })
+  assert.deepEqual(await decodeShare('#' + h + PLAY_SUFFIX), { ok: true, text })
+  assert.equal((await decodeShare('#' + h + '!other')).reason, 'corrupt')
+  assert.equal(PLAY_SUFFIX, '!play')
 })

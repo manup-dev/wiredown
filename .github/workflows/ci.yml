@@ -39,6 +39,15 @@ jobs:
       - name: Obsidian plugin
         working-directory: integrations/obsidian
         run: npm ci && npm run build && npm test
+      - name: Lucide icon pack
+        working-directory: integrations/icons-lucide
+        run: npm ci && npm test
+      - name: Tabler icon pack
+        working-directory: integrations/icons-tabler
+        run: npm ci && npm test
+      - name: Heroicons icon pack
+        working-directory: integrations/icons-heroicons
+        run: npm ci && npm test
       - name: Benchmark harness (no network, no keys)
         working-directory: bench
         run: npm ci && npm test

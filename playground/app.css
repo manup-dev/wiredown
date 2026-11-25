@@ -169,7 +169,7 @@ main.split { flex: 1; display: grid; grid-template-columns: minmax(0, 1fr); min-
 /* The screen frame (the first shape the library paints) gets an opaque sheet so the mat's dots stay outside it. */
 /* Preview only: downloaded and copied SVG and HTML keep the library's own translucent frame. */
 #preview .wm-screen svg > rect:first-of-type { fill: var(--surface); fill-opacity: 1; }
-#preview .wm-screen.flash { animation: flash 1s ease-out; }
+#preview .wm-screen:not([class*=wm-in-]).flash { animation: flash 1s ease-out; }
 #preview .wm-notes { font-size: 13px; color: var(--muted); max-width: 60ch; margin-top: 22px; }
 #preview .wm-notes strong { color: var(--fg); font-weight: 600; }
 #preview .wm-outline { font-size: 13px; color: var(--muted); margin-top: 14px; }
@@ -177,8 +177,8 @@ main.split { flex: 1; display: grid; grid-template-columns: minmax(0, 1fr); min-
 #preview .wm-error { color: var(--fg); background: var(--surface); border: 1px solid var(--line-strong); border-inline-start: 3px solid var(--err); border-radius: 8px; padding: 12px 16px; max-width: 60ch; font-size: 14px; }
 /* Prototype: once a link is clicked, show only that screen (the URL stays the share-free page address). */
 #preview .wm.wm-proto[data-wm-current] .wm-screen { display: none; }
-#preview .wm.wm-proto[data-wm-current] .wm-screen.is-current { display: block; }
-#preview.intro .wm-title, #preview.intro .wm-screen { animation: rise .5s cubic-bezier(.2, .7, .2, 1) both; }
+#preview .wm.wm-proto[data-wm-current] .wm-screen.wm-current { display: block; }
+#preview.intro .wm-title, #preview.intro .wm-screen:not([class*=wm-in-]) { animation: rise .5s cubic-bezier(.2, .7, .2, 1) both; }
 #preview.intro .wm-strip > :nth-child(2) { animation-delay: .06s; }
 #preview.intro .wm-strip > :nth-child(3) { animation-delay: .12s; }
 #preview.intro .wm-strip > :nth-child(4) { animation-delay: .18s; }
@@ -271,6 +271,30 @@ main.split[data-source-hidden] .pane-source, main.split[data-source-hidden] #spl
 }
 #export-output[data-state=error] { color: var(--muted); font-family: system-ui, sans-serif; }
 
+/* ── Play: the flow as a looping animation ── */
+.viewbar .play-btn { height: 28px; flex: none; display: inline-flex; align-items: center; gap: 7px; }
+.play-btn::before { content: ""; width: 0; height: 0; border-inline-start: 8px solid currentColor; border-block: 5px solid transparent; }
+#play {
+  width: min(960px, calc(100vw - 32px)); max-width: none; max-height: calc(100dvh - 32px); box-sizing: border-box;
+  margin: auto; padding: 16px 20px 18px; overflow: auto; overscroll-behavior: contain;
+  border: 1px solid var(--line-strong); border-radius: 12px; background: var(--surface); color: var(--fg); box-shadow: var(--shadow);
+}
+#play::backdrop { background: rgba(13, 14, 16, .55); }
+#play[open] { display: flex; flex-direction: column; gap: 12px; }
+.play-head { display: flex; align-items: center; gap: 12px; }
+.play-head h2 { margin: 0 auto 0 0; font: 600 16px/1.3 system-ui, sans-serif; letter-spacing: -.01em; }
+.play-steps, .play-note, .play-hint { margin: -6px 0 0; font-size: 13px; color: var(--muted); }
+.play-note { margin: 0; color: var(--warn); }
+.play-hint { margin: 0; }
+.play-stage { display: flex; justify-content: center; padding: 12px; border-radius: 8px; background: var(--mat); min-height: 120px; }
+#play-img { display: block; max-width: 100%; height: auto; max-height: min(62vh, 720px); object-fit: contain; border-radius: 6px; box-shadow: var(--shadow); }
+.play-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.play-progress { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--muted); }
+.play-progress[hidden] { display: none; }
+.play-progress progress { flex: 1; min-width: 80px; accent-color: var(--accent); }
+.play-progress span { font-variant-numeric: tabular-nums; }
+#play #toast { bottom: 22px; }
+
 /* ── Footer, toast ── */
 footer { padding: 12px 20px; font-size: 12.5px; color: var(--muted); border-top: 1px solid var(--line); }
 #toast {
@@ -315,6 +339,9 @@ footer { padding: 12px 20px; font-size: 12.5px; color: var(--muted); border-top:
   .toolbar button { padding: 0 10px; }
   .viewbar { padding-inline: 16px; flex-wrap: wrap; }
   #screens-nav { flex-basis: 100%; order: -1; }
+  #play { width: calc(100vw - 32px); padding: 14px 14px 16px; }
+  .play-actions button { flex: 1 1 calc(50% - 4px); min-width: 0; white-space: normal; height: auto; min-height: 36px; padding: 6px 10px; }
+  .play-stage { padding: 8px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

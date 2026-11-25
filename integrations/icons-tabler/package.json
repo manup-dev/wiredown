@@ -1,0 +1,49 @@
+{
+  "name": "wiredown-icons-tabler",
+  "version": "0.1.1",
+  "description": "Every Tabler outline icon as a wiredown icon pack",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/manup-dev/wiredown.git",
+    "directory": "integrations/icons-tabler"
+  },
+  "homepage": "https://github.com/manup-dev/wiredown/tree/main/integrations/icons-tabler",
+  "bugs": {
+    "url": "https://github.com/manup-dev/wiredown/issues"
+  },
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "default": "./index.js"
+    }
+  },
+  "files": [
+    "index.js",
+    "icons.js",
+    "index.d.ts",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "wiredown",
+    "icons",
+    "icon-pack",
+    "tabler"
+  ],
+  "peerDependencies": {
+    "wiredown": ">=0.2.0"
+  },
+  "devDependencies": {
+    "@tabler/icons": "3.51.0",
+    "wiredown": "file:../.."
+  },
+  "scripts": {
+    "build": "node build.mjs",
+    "test": "node --test test/*.test.mjs"
+  }
+}

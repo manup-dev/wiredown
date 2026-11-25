@@ -24,7 +24,7 @@ test('share link round trip', async ({ page, context }) => {
 test('examples, export tab and AI prompt', async ({ page, context }) => {
   await context.grantPermissions(['clipboard-read', 'clipboard-write'])
   await page.goto('/')
-  await page.getByRole('combobox', { name: 'Examples' }).selectOption('checkout')
+  await page.getByRole('combobox', { name: 'Examples' }).selectOption('shop-checkout')
   await expect(page.locator('#preview figure.wm')).toHaveCount(1)
   await page.getByRole('tab', { name: 'OpenUI' }).click()
   await expect(page.locator('#export-output')).toContainText('root = ')
@@ -122,10 +122,57 @@ test('the open export tab folds the code away; long problem lists fold', async (
   await expect(page.locator('#export')).toBeHidden()
 })
 
-test('the gallery has the flows', async ({ page }) => {
+test('the gallery has the showcase and the states', async ({ page }) => {
   await page.goto('/')
-  for (const id of ['dashboard-states', 'team-invite', 'upgrade-paywall', 'password-reset', 'mobile-onboarding', 'support-inbox']) {
+  for (const id of ['saas-dashboard', 'shop-checkout', 'mobile-onboarding', 'chat-app', 'social-feed', 'booking-app', 'dashboard-states', 'upgrade-paywall', 'password-reset']) {
     await page.getByRole('combobox', { name: 'Examples' }).selectOption(id)
     await expect(page.locator('#problems')).toContainText('No problems')
   }
+})
+
+test('an icon pack loads only when a block names it', async ({ page }) => {
+  const packRequests = []
+  page.on('request', (r) => { if (r.url().includes('/packs/')) packRequests.push(r.url()) })
+  await page.goto('/')
+  const editor = page.getByRole('textbox', { name: 'wiredown source' })
+  await editor.fill('screen a "A"\n  icon "star"\n')
+  await expect(page.locator('#preview figure.wm svg')).toHaveCount(1)
+  expect(packRequests).toEqual([])
+  await editor.fill('@icons lucide\nscreen a "A"\n  icon "a-arrow-down"\n')
+  await expect(page.locator('#preview figure.wm svg g[data-wm-el] path')).toHaveCount(1)
+  await expect(page.getByRole('list', { name: 'Problems' })).not.toContainText('icon_pack_missing')
+  await expect.poll(() => packRequests.join(' ')).toContain('/packs/lucide/')
+  await editor.fill('screen a "A"\n  icon "tabler:brand-figma"\n')
+  await expect(page.locator('#preview figure.wm svg g[data-wm-el] path')).toHaveCount(1)
+  await expect.poll(() => packRequests.join(' ')).toContain('/packs/tabler/')
+})
+
+test('in the prototype view a link shows its screen, marked wm-current, with its motion class', async ({ page }) => {
+  await page.goto('/')
+  await page.getByRole('textbox', { name: 'wiredown source' }).fill('@motion slide\nscreen a "A"\n  button "Go" primary -> b\nscreen b "B"\n  h1 "Second"\n')
+  await page.locator('#view').selectOption('prototype')
+  const fig = page.locator('#preview figure.wm-proto')
+  await expect(fig.locator('.wm-screen.wm-in-slide')).toHaveCount(2)
+  await page.getByRole('navigation', { name: 'Jump to a screen' }).getByRole('button', { name: 'B' }).click()
+  await expect(fig.locator('.wm-screen.wm-current')).toHaveAttribute('data-wm-screen', 'b')
+  await expect(fig.locator('.wm-screen[data-wm-screen=b] svg')).toBeVisible()
+  await expect(fig.locator('.wm-screen[data-wm-screen=a] svg')).toBeHidden()
+})
+
+test('motion animations run on entering a screen, not on the start screen, not with reduced motion', async ({ page }) => {
+  const names = (id) => page.evaluate((i) => [...document.querySelector(`.wm-screen[data-wm-screen=${i}]`).getAnimations()].map((a) => a.animationName), id)
+  await page.goto('/')
+  await page.getByRole('textbox', { name: 'wiredown source' }).fill('@motion slide\nscreen a "A"\n  button "Go" primary -> b\nscreen b "B"\n  h1 "Second"\n')
+  await page.locator('#view').selectOption('prototype')
+  await expect(page.locator('#preview figure.wm-proto .wm-in-slide')).toHaveCount(2)
+  await page.waitForTimeout(1000)
+  expect(await names('a')).toEqual([])
+  await page.evaluate(() => { for (const s of document.querySelectorAll('.wm-screen')) s.style.setProperty('--x', '1') })
+  const nav = page.getByRole('navigation', { name: 'Jump to a screen' })
+  await nav.getByRole('button', { name: 'B' }).click()
+  expect(await names('b')).toEqual(['wm-slide'])
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await nav.getByRole('button', { name: 'A' }).click()
+  await nav.getByRole('button', { name: 'B' }).click()
+  expect(await names('b')).toEqual([])
 })

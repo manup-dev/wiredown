@@ -8,7 +8,7 @@ One block is one flow. Headers first, then `define`, `screen` and `variant` bloc
 
 | Part | Form |
 | --- | --- |
-| Headers | `@device phone\|tablet\|laptop\|desktop\|WxH [fit]`, `@look wire\|clean`, `@title "…"`, `@flow a b c`, `@requires` |
+| Headers | `@device phone\|tablet\|laptop\|desktop\|WxH [fit]`, `@look wire\|clean`, `@title "…"`, `@flow a b c`, `@icons lucide, tabler`, `@motion none\|slide\|fade\|push\|sheet\|zoom`, `@requires` |
 | Screen | `screen <id> "Label"` |
 | Variant | `variant <id> of <screen> "Label"`, then indented `#id attr=value flag hide` patches |
 | Define | `define <name> <param>…`, body uses `$param`; use it like a kind |
@@ -20,10 +20,16 @@ One block is one flow. Headers first, then `define`, `screen` and `variant` bloc
 | Text | `h1 h2 h3 text link` |
 | Controls | `button input textarea select checkbox radio toggle` |
 | Media | `image icon avatar badge` |
+| Image options | `image "Hero" type=photo\|chart\|map\|video\|illustration\|logo\|avatar ratio=16:9\|4:3\|3:2\|1:1\|9:16\|21:9`. `type` picks the centre glyph, `ratio` sets the height from the width unless `h=` is given; that height is kept between 32 and 800, so a very wide image is shorter than its ratio in the SVG (the HTML export keeps the exact ratio). |
 | Data and navigation | `list item table tabs tab navbar tabbar` |
 | Flags | `primary disabled loading selected checked on muted back` (per kind, see `KINDS`) |
+| Icon names | `apple bell calendar card check check-circle chevron-down chevron-left chevron-right circle-alert circle-help clock copy download edit external-link eye-off file filter github google heart home image lock log-in log-out mail menu message-circle more plus search settings shopping-cart star trash trash-2 upload user users x x-circle` |
+| Icon aliases | `gear cog` (settings), `delete` (trash-2), `close` (x), `profile` (user), `cart` (shopping-cart), `notifications` (bell), `chat` (message-circle), `help` (circle-help), `warning` (circle-alert), `error` (x-circle), `success` (check-circle), `logout` (log-out), `login` (log-in). An unknown name draws a placeholder ring and lints as `unknown_icon` |
+| Icon packs | Bigger icon sets come as packs a host loads (`defineIconPack` from `wiredown/icons`, `opts.icons`; `wiredown-icons-lucide`, `-tabler`, `-heroicons`). `icon "tabler:brand-figma"` reads that pack for one name; the header `@icons lucide` (or `@icons lucide, tabler`, in order) makes bare names read those packs first, then the built-ins. Without the header, bare names are built-in only. A pack the host did not load lints as `icon_pack_missing` and the built-in icon of the same name is drawn if there is one |
 | Kind attributes | `placeholder type options error tone icon rows cols` |
 | Devices | `phone 390x844`, `tablet 820x1180`, `laptop 1280x800`, `desktop 1440x900`, or `WxH` (100 to 4000 each). Add `fit` (`@device phone fit`) to end each screen at its content (at least 240 px; a taller screen keeps the fold line at the device height). A screen with a `modal`, `sheet` or `toast` ignores `fit`, because overlays are placed against the device height |
+| Motion | In the prototype view, `@motion slide` sets how a screen is entered: `slide` and `push` from the right, `sheet` from the bottom, `fade`, `zoom` from 96%. A screen line can override it with `motion=sheet`, or `motion=none`. CSS only (`WIREDOWN_CSS` or `wiredown.css`); it runs where a screen becomes visible by `:target` or by the `wm-current` class a host sets, and is off under `prefers-reduced-motion`. Other views are unchanged |
+| Animated flow | `wiredown animate` and `renderFlowAnimation` (in `wiredown/export`) play the flow as one SVG file: each screen in turn, a tap on the element that leads on, the screen's motion between them, at most 24 steps. `@flow a b c` plays exactly those screens in that order (repeats kept, nothing else shown); without it the order follows the first link to a screen not yet shown, then the screen's variants, then the remaining screens in order. `flowPath` gives that order, `renderFlowFrame` one still frame |
 | Info string | `wiredown v1 look=clean view=prototype` (`screens` is an alias for `wiredown`) |
 
 Layout is a deterministic flex model with a fixed text model (widths by character class, no fonts). Labels wrap at spaces; a row too narrow for its children's natural widths shrinks them toward their min-content width first (the widest word of each label plus its padding and icon), so no label breaks inside a word while the row has room for every word. Only a word wider than the room left for it breaks, per character.

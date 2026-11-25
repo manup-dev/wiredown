@@ -1,0 +1,18 @@
+---
+description: Writing UI screens, wireframes and flows as wiredown fences in markdown
+globs: "**/*.md,**/*.wiredown"
+alwaysApply: false
+---
+
+# wiredown
+
+wiredown describes UI screens as text in a markdown fence tagged `wiredown` (`wiremark` and `screens` also draw). The text is drawn as static wireframes: describe structure, not pixels or colours.
+
+- Before writing a block, get the language: the `get_wiredown_grammar` MCP tool, or `npx wiredown contract`. Use only the kinds, attributes and flags it lists.
+- One fenced block is one flow. Start with optional headers (`@device phone`, `@title "Text"`, `@flow a b c`), then `screen <id> "Label"` lines with their elements indented below.
+- Indent children by 2 or 4 spaces, one step per level, spaces only. Labels are in double quotes.
+- `-> id` must name a screen in the same block (or `back`).
+- Give an explicit `#id` to any element you link to, patch or refer to later.
+- Show states as `variant <id> of <screen> "Label"` with indented patch lines such as `#password error="Wrong password"`.
+- After writing or changing a block, check it with the `lint_wiredown` MCP tool or `npx wiredown lint <file>`, and fix every error.
+- `wiredown_link` returns a playground link that draws the block; `npx wiredown link <file>` prints the same link.

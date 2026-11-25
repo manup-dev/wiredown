@@ -2,7 +2,7 @@
 // text is escaped here, tags and attribute names are constants, colours come only from look tokens.
 import { escapeXml as esc, px } from './escape.js';
 import { lookOf, fillToken, strokeToken } from './looks.js';
-import { iconPath } from './icons.js';
+import { resolveIcon } from './packs.js';
 
 export const FONT_FAMILY = "system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif";
 const SCREEN_ID = /^[a-z][a-z0-9-]{0,63}$/;
@@ -57,11 +57,12 @@ function textEl(o, look) {
   return head + esc(o.text) + '</text>';
 }
 
-function iconEl(o, look) {
+function iconEl(o, look, ctx) {
   const size = Math.max(8, Math.min(96, Number(o.size) || 24));
-  const d = iconPath(o.name, Number(o.x) || 0, Number(o.y) || 0, size);
-  const sw = Math.max(1, Math.round((size / 12) * 2) / 2);
-  if (d === null) {
+  const hit = resolveIcon(o.name, Number(o.x) || 0, Number(o.y) || 0, size, ctx.icons);
+  const d = hit && hit.d;
+  const sw = Math.max(1, Math.round((size / 12) * (hit ? hit.w : 2)) / 2);
+  if (!hit) {
     const r = size / 2 - 1;
     return `<circle cx="${px(o.x + size / 2)}" cy="${px(o.y + size / 2)}" r="${px(r)}"${paintAttrs(look, 'none', o.tone || 'strong', 1.5, true)}/>`;
   }
@@ -101,7 +102,7 @@ function opEl(raw, look, ctx, depth) {
         `<line x1="${px(o.x)}" y1="${px(y2)}" x2="${px(x2)}" y2="${px(o.y)}"${a}/>`;
     }
     case 'text': return textEl(o, look);
-    case 'icon': return iconEl(o, look);
+    case 'icon': return iconEl(o, look, ctx);
     case 'group': {
       const el = typeof o.el === 'string' && o.el ? ` data-wm-el="${esc(o.el)}"` : '';
       const op = Object.prototype.hasOwnProperty.call(OPACITY, o.opacity) ? ` opacity="${OPACITY[o.opacity]}"` : '';
@@ -123,7 +124,7 @@ function opsEl(ops, look, ctx, depth) {
   return out;
 }
 
-/** opts: { width, height, title, blockIndex, screenId, look }. */
+/** opts: { width, height, title, blockIndex, screenId, look, icons } (icons: an iconContext). */
 export function serializeScreen(ops, opts = {}) {
   const look = lookOf(opts.look);
   const W = Math.max(1, Math.min(100000, Number(opts.width) || 390));
@@ -138,5 +139,5 @@ export function serializeScreen(ops, opts = {}) {
     `${paintAttrs(look, look.name === 'clean' ? 'wash' : 'none', 'line', 1, true)}/>` +
     `<text x="${px(W - 4)}" y="${px(-8)}" font-size="11" font-weight="600" text-anchor="end" letter-spacing=".6"` +
     `${paintAttrs(look, 'muted', null)}>Mock</text>`;
-  return head + `<title>${esc(title)}</title>` + frame + opsEl(ops, look, { block }, 0) + '</svg>';
+  return head + `<title>${esc(title)}</title>` + frame + opsEl(ops, look, { block, icons: opts.icons }, 0) + '</svg>';
 }
