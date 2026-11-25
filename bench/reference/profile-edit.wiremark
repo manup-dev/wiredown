@@ -1,0 +1,17 @@
+@device phone
+screen profile "Edit profile"
+  navbar "Edit profile" back -> view
+  stack pad=20 gap=16
+    avatar "Ada Lovelace"
+    input "Display name" #display-name
+    input "Email" type=email #email
+    textarea "Bio" rows=3
+    button "Save" primary w=fill -> view
+variant profile-error of profile "Email taken"
+  #email error="That email is already used"
+screen view "Profile"
+  navbar "Profile"
+  stack pad=20 gap=8
+    h2 "Ada Lovelace"
+    text "ada@company.com"
+    button "Edit profile" -> profile

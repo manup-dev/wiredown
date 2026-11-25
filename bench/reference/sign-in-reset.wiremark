@@ -1,0 +1,19 @@
+@device phone
+@title "Sign in"
+screen signin "Sign in"
+  stack pad=24 gap=16
+    h1 "Welcome back" align=center
+    input "Email" type=email placeholder="you@company.com" #email
+    input "Password" type=password #password
+    row justify=between
+      checkbox "Remember me" checked
+      link "Forgot password?" -> reset
+    button "Sign in" primary w=fill #submit
+variant signin-error of signin "Wrong password"
+  #password error="That password is not right"
+screen reset "Reset password"
+  navbar "Reset password" back -> signin
+  stack pad=24 gap=16
+    text "We will email you a link to choose a new password."
+    input "Email" type=email #reset-email
+    button "Send link" primary w=fill

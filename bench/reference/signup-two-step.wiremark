@@ -1,0 +1,21 @@
+@device phone
+screen account "Create your account"
+  navbar "Step 1 of 2"
+  stack pad=24 gap=16
+    h1 "Create your account"
+    input "Email" type=email placeholder="you@company.com" #email
+    input "Password" type=password #password
+    button "Continue" primary w=fill -> check
+screen check "Check your email"
+  navbar "Step 2 of 2" back -> account
+  stack pad=24 gap=16
+    h2 "Check your email"
+    text "We sent a 6 digit code to your address."
+    input "Code" placeholder="123456" #code
+    button "Verify" primary w=fill -> done
+    link "Send a new code" muted
+screen done "Welcome"
+  stack pad=24 gap=16 align=center
+    icon icon=check
+    h1 "You are in"
+    button "Open my workspace" primary w=fill

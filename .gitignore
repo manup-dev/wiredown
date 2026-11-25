@@ -1,0 +1,5 @@
+node_modules/
+dist/
+.preview/
+*.vsix
+integrations/openui-check/schema.json

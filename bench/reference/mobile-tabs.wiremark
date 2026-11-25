@@ -1,0 +1,27 @@
+@device phone
+screen home "Home"
+  navbar "Home"
+  stack pad=16 gap=12
+    h2 "Good morning"
+    card "Today"
+      text "3 tasks due"
+  tabbar
+    item "Home" icon=home selected
+    item "Search" icon=search -> search
+    item "Profile" icon=user -> profile
+screen search "Search"
+  navbar "Search"
+  stack pad=16
+    input "Search" type=search
+  tabbar
+    item "Home" icon=home -> home
+    item "Search" icon=search selected
+    item "Profile" icon=user -> profile
+screen profile "Profile"
+  navbar "Profile"
+  stack pad=16
+    avatar "Ada Lovelace"
+  tabbar
+    item "Home" icon=home -> home
+    item "Search" icon=search -> search
+    item "Profile" icon=user selected

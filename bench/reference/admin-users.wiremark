@@ -1,0 +1,21 @@
+@device desktop
+screen users "Users"
+  navbar "Admin · Users"
+  stack pad=24 gap=16
+    row justify=between
+      input "Search users" type=search w=300
+      button "Invite user" primary
+    table cols="Name, Email, Role, Status" rows=5
+    row gap=8
+      button "Edit" #edit
+      button "Delete selected" icon=trash -> confirm-delete #delete
+  modal "Delete this user?"
+    text "Their documents move to the workspace owner."
+    row gap=8 justify=end
+      button "Cancel"
+      button "Delete" primary
+screen confirm-delete "User deleted"
+  stack pad=24 gap=12 align=center
+    icon icon=check
+    h2 "User deleted"
+    button "Back to users" -> users

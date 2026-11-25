@@ -1,0 +1,19 @@
+@device laptop
+screen upload "Upload files"
+  navbar "Files"
+  stack pad=24 gap=16
+    card "Drop files here"
+      icon icon=upload
+      text "or choose from your computer" muted
+      button "Choose files" primary #choose
+    list
+      item "report.pdf" "Uploading 64%" icon=file
+      item "photo.png" "Done" icon=check
+  toast "Uploading report.pdf" tone=info
+variant upload-done of upload "Upload finished"
+  #choose hide
+screen files "All files"
+  navbar "Files" back -> upload
+  stack pad=24
+    table cols="Name, Size, Added" rows=3
+    button "Upload more" -> upload

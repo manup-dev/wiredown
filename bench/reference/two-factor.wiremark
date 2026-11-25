@@ -1,0 +1,25 @@
+@device phone
+screen intro "Two-factor"
+  navbar "Security"
+  stack pad=24 gap=16
+    h2 "Protect your account"
+    text "Use an authenticator app to get a code each time you sign in."
+    button "Set up" primary w=fill -> scan
+screen scan "Scan the code"
+  navbar "Step 1" back -> intro
+  stack pad=24 gap=16 align=center
+    image "QR code" w=200 h=200
+    text "Scan this with your authenticator app." muted
+    button "I scanned it" primary w=fill -> verify
+screen verify "Enter the code"
+  navbar "Step 2" back -> scan
+  stack pad=24 gap=16
+    input "6 digit code" placeholder="123456" #code
+    button "Verify" primary w=fill -> backup
+screen backup "Backup codes"
+  stack pad=24 gap=12
+    h2 "Save your backup codes"
+    card "Backup codes"
+      text "7f3a-91cc"
+      text "b20d-44ef"
+    button "Done" primary w=fill -> intro

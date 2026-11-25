@@ -1,0 +1,27 @@
+@device laptop
+screen plan "Your plan"
+  navbar "Billing"
+  stack pad=24 gap=12
+    h2 "Pro, $5 per seat"
+    text "Renews on 1 December."
+    link "Cancel subscription" -> survey
+screen survey "Why are you leaving?"
+  navbar "Cancel" back -> plan
+  stack pad=24 gap=12
+    h2 "Tell us why"
+    radio "Too expensive" checked
+    radio "Missing a feature"
+    radio "Not using it"
+    textarea "Anything else?" rows=3
+    button "Continue" primary -> confirm
+screen confirm "Confirm cancellation"
+  navbar "Cancel" back -> survey
+  stack pad=24 gap=12
+    text "You keep Pro until 1 December, then move to Free."
+    row gap=8
+      button "Keep my plan" -> plan
+      button "Cancel subscription" primary -> gone
+screen gone "Cancelled"
+  stack pad=24 gap=12 align=center
+    h2 "Subscription cancelled"
+    button "Back to the app" -> plan

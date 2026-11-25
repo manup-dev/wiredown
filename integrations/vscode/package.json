@@ -1,0 +1,29 @@
+{
+  "name": "wiremark",
+  "displayName": "wiremark: wireframes in markdown",
+  "description": "Draw wiremark (UI screens and flows as markdown) in the Markdown preview, with lint and highlighting.",
+  "version": "0.1.0",
+  "publisher": "PUBLISHER_ID",
+  "license": "MIT",
+  "repository": { "type": "git", "url": "git+https://github.com/manup-dev/wiremark.git", "directory": "integrations/vscode" },
+  "homepage": "https://github.com/manup-dev/wiremark/tree/main/integrations/vscode",
+  "bugs": { "url": "https://github.com/manup-dev/wiremark/issues" },
+  "private": true,
+  "engines": { "vscode": "^1.85.0" },
+  "categories": ["Visualization", "Programming Languages", "Linters"],
+  "keywords": ["wireframe", "mockup", "markdown", "ui", "prototype"],
+  "main": "./dist/extension.js",
+  "activationEvents": ["onLanguage:markdown", "onLanguage:wiremark"],
+  "contributes": {
+    "markdown.markdownItPlugins": true,
+    "markdown.previewStyles": ["./media/preview.css"],
+    "languages": [{ "id": "wiremark", "aliases": ["wiremark", "Screens"], "extensions": [".wiremark"], "configuration": "./language-configuration.json" }],
+    "grammars": [
+      { "language": "wiremark", "scopeName": "source.wiremark", "path": "./syntaxes/wiremark.tmLanguage.json" },
+      { "scopeName": "markdown.wiremark.codeblock", "path": "./syntaxes/markdown-injection.json", "injectTo": ["text.html.markdown"], "embeddedLanguages": { "meta.embedded.block.wiremark": "wiremark" } }
+    ],
+    "commands": [{ "command": "wiremark.openPreview", "title": "wiremark: Open preview" }]
+  },
+  "scripts": { "vscode:prepublish": "npm run build", "build": "node build.mjs", "test": "node --test test/*.test.mjs", "package": "vsce package" },
+  "devDependencies": { "wiremark": "file:../..", "esbuild": "^0.24.0", "@vscode/vsce": "^3.2.1", "markdown-it": "^14.1.0", "vscode-textmate": "^9.1.0", "vscode-oniguruma": "^2.0.1" }
+}

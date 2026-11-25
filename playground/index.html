@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="color-scheme" content="light dark">
+<title>wiremark playground</title>
+<meta name="description" content="Write UI wireframes as text and see them drawn. Share a link, copy the SVG, or hand the screens to OpenUI.">
+<link rel="stylesheet" href="../wiremark.css">
+<link rel="stylesheet" href="app.css">
+<script type="module" src="app.js"></script>
+</head>
+<body>
+<header class="bar">
+  <h1>wiremark <span>playground</span></h1>
+  <label class="field">Examples <select id="examples" aria-label="Examples"></select></label>
+  <div class="actions">
+    <button id="share" type="button" class="primary">Share</button>
+    <button id="ai" type="button">Copy prompt for your AI</button>
+    <button id="theme" type="button" aria-pressed="false" class="quiet">Dark</button>
+  </div>
+</header>
+<main class="split">
+  <section class="pane pane-source" aria-labelledby="source-title">
+    <div class="pane-head">
+      <h2 id="source-title">Source</h2>
+      <p id="keys-hint" class="hint">Tab indents. Esc, then Tab, leaves the editor.</p>
+    </div>
+    <div class="editor"><pre id="gutter" aria-hidden="true"></pre><textarea id="source" aria-label="wiremark source" aria-describedby="keys-hint" spellcheck="false" autocapitalize="off" autocomplete="off"></textarea></div>
+    <ul id="problems" role="list" aria-label="Problems" aria-live="polite"></ul>
+  </section>
+  <section class="pane pane-drawing" aria-labelledby="drawing-title">
+    <div class="toolbar">
+      <h2 id="drawing-title">Drawing</h2>
+      <label class="field">Look <select id="look"><option value="">From the block</option><option value="wire">Wire</option><option value="clean">Clean</option></select></label>
+      <label class="field">View <select id="view"><option value="">Stack</option><option value="prototype">Prototype</option></select></label>
+      <span class="toolbar-gap"></span>
+      <button id="svg" type="button">Download SVG</button>
+      <button id="copysvg" type="button">Copy SVG</button>
+      <button id="html" type="button">Download HTML</button>
+    </div>
+    <div id="preview"></div>
+    <div class="export-head">
+      <h2 id="export-title">Export as code</h2>
+      <div role="tablist" aria-label="Export">
+        <button role="tab" id="tab-openui" aria-selected="false" aria-controls="export-output" tabindex="0">OpenUI</button>
+        <button role="tab" id="tab-html" aria-selected="false" aria-controls="export-output" tabindex="-1">HTML</button>
+      </div>
+    </div>
+    <div id="export" hidden><button id="copyexport" type="button">Copy</button><pre id="export-output" role="tabpanel" tabindex="0"></pre></div>
+  </section>
+</main>
+<footer>MIT · <a href="https://github.com/REPO">GitHub</a> · Built by <a href="https://reph.dev/?ref=wiremark">reph</a>, where specs and screens live together</footer>
+<p id="toast" role="status" aria-live="polite" hidden></p>
+</body>
+</html>

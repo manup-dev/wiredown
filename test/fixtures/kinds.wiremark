@@ -1,0 +1,67 @@
+@device phone
+@look clean
+@title "Team settings"
+screen settings "Team settings"
+  navbar "Settings" back -> home
+  stack pad=20 gap=16
+    row gap=12
+      avatar "Ada Lovelace"
+      stack gap=2
+        h3 "Ada Lovelace"
+        text "Admin · ada@company.com" muted
+      spacer
+      badge "Pro" tone=info
+    tabs
+      tab "Members" selected
+      tab "Billing"
+      tab "Security"
+    input "Search members" type=search placeholder="Name or email"
+    list
+      item "Grace Hopper" "Editor" icon=user -> member
+      item "Alan Turing" "Viewer · invited" icon=mail
+      item "Katherine Johnson" "Admin" icon=user selected
+    card "Notifications"
+      toggle "Email me about new comments" on
+      toggle "Weekly digest"
+      checkbox "Only when I am mentioned" checked
+    row gap=12
+      button "Cancel" w=fill
+      button "Save changes" primary w=fill note="Saves all three sections at once"
+  tabbar
+    item "Home" icon=home
+    item "Team" icon=users selected
+    item "Settings" icon=settings
+
+screen home "Home"
+  navbar "Home"
+  stack pad=20 gap=16
+    h1 "Good morning"
+    text "Three documents changed since yesterday. Two need your review."
+    grid cols=2 gap=12
+      card "Drafts"
+        h2 "12"
+      card "In review"
+        h2 "3"
+    image "Weekly chart"
+    table cols="Doc, Owner, Status" rows=3
+    select "Workspace" options="Acme, Globex"
+    textarea "Note" rows=3 placeholder="Write a note for the team"
+    row gap=8
+      badge "Live" tone=good icon=check
+      badge "Late" tone=bad
+      badge "Draft" muted
+      gadget "Chart widget"
+  toast "Saved" tone=good
+
+screen member "Member"
+  navbar "Grace Hopper" back -> settings
+  stack pad=20 gap=16
+    radio "Editor" checked
+    radio "Viewer"
+    button "Remove from team" icon=trash
+    button "Saving" loading w=fill
+  modal "Remove Grace?"
+    text "She loses access to every document in this team."
+    row gap=8 justify=end
+      button "Cancel"
+      button "Remove" primary

@@ -1,0 +1,22 @@
+@device laptop
+screen profile "Profile settings"
+  navbar "Settings"
+  stack pad=24 gap=16
+    tabs
+      tab "Profile" selected
+      tab "Notifications" -> notifications
+      tab "Security"
+    input "Display name" #display-name
+    input "Email" type=email #email
+    toggle "Show my email to teammates" on
+    button "Save changes" primary
+screen notifications "Notification settings"
+  navbar "Settings" back -> profile
+  stack pad=24 gap=16
+    tabs
+      tab "Profile" -> profile
+      tab "Notifications" selected
+      tab "Security"
+    toggle "Email me about comments" on
+    toggle "Weekly digest"
+    button "Save changes" primary

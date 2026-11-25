@@ -1,0 +1,19 @@
+@device phone
+screen team "Team"
+  navbar "Team"
+  stack pad=20 gap=12
+    list
+      item "Ada Lovelace" "Owner" icon=user
+      item "Grace Hopper" "Editor" icon=user
+    button "Invite teammates" primary w=fill -> invite
+  sheet "Invite teammates"
+    input "Email addresses" placeholder="ada@company.com, alan@company.com" #emails
+    select "Role" options="Editor, Viewer" #role
+    row gap=8 justify=end
+      button "Cancel"
+      button "Send invites" primary
+screen invite "Invites sent"
+  stack pad=20 gap=12 align=center
+    icon icon=check
+    h2 "Invites sent"
+    button "Back to team" -> team

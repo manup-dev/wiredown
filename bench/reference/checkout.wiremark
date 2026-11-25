@@ -1,0 +1,44 @@
+@device desktop
+@title "Checkout"
+screen cart "Cart"
+  navbar "Cart"
+  stack pad=24 gap=16
+    list
+      item "Canvas tote" "1 x $24.00" icon=card
+      item "Enamel mug" "2 x $12.00" icon=card
+    row justify=between
+      h3 "Subtotal"
+      h3 "$48.00"
+    button "Checkout" primary -> shipping
+screen shipping "Shipping"
+  navbar "Shipping" back -> cart
+  stack pad=24 gap=12
+    h2 "Delivery address"
+    input "Full name" #name
+    input "Street address" #street
+    row gap=12
+      input "City" #city
+      input "Postcode" #postcode
+    select "Country" options="United States, Canada, Germany" #country
+    button "Continue to payment" primary -> payment
+screen payment "Payment"
+  navbar "Payment" back -> shipping
+  stack pad=24 gap=12
+    h2 "Card details"
+    input "Card number" placeholder="1234 1234 1234 1234" #card
+    row gap=12
+      input "Expiry" placeholder="MM/YY" #expiry
+      input "CVC" #cvc
+    checkbox "Billing address is the same" checked
+    button "Review order" primary -> confirm
+  modal "Place this order?"
+    text "You will be charged $48.00 today."
+    row gap=8 justify=end
+      button "Cancel" -> payment
+      button "Place order" primary -> confirm
+screen confirm "Confirmation"
+  stack pad=24 gap=12 align=center
+    icon icon=check
+    h1 "Order placed"
+    text "A receipt is on its way to your email."
+    button "Keep shopping" -> cart

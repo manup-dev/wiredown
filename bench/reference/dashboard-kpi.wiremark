@@ -1,0 +1,21 @@
+@device desktop
+screen dashboard "Dashboard"
+  navbar "Dashboard"
+  stack pad=24 gap=16
+    row gap=16
+      card "Revenue"
+        h1 "$48.2k"
+        badge "+12%" tone=good
+      card "Active users"
+        h1 "3,481"
+        badge "+4%" tone=good
+      card "Churn"
+        h1 "1.8%"
+        badge "-0.3%" tone=bad
+    image "Revenue by month" h=240
+    table cols="Customer, Plan, MRR" rows=4
+    button "Export report" -> report
+screen report "Report"
+  navbar "Report" back -> dashboard
+  stack pad=24
+    text "Your export is being prepared."

@@ -1,0 +1,56 @@
+{
+  "name": "rehype-wiremark",
+  "version": "0.1.0",
+  "description": "rehype plugin: draw wiremark (UI wireframes as markdown) fences as static SVG",
+  "license": "MIT",
+  "repository": { "type": "git", "url": "git+https://github.com/manup-dev/wiremark.git", "directory": "integrations/rehype" },
+  "homepage": "https://github.com/manup-dev/wiremark/tree/main/integrations/rehype",
+  "bugs": { "url": "https://github.com/manup-dev/wiremark/issues" },
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "default": "./index.js"
+    }
+  },
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "rehype",
+    "rehype-plugin",
+    "unified",
+    "markdown",
+    "wireframe",
+    "wiremark",
+    "mdx",
+    "astro",
+    "docusaurus"
+  ],
+  "peerDependencies": {
+    "wiremark": "^0.1.0"
+  },
+  "dependencies": {
+    "@types/hast": "^3.0.5",
+    "hast-util-from-html": "^2.0.3",
+    "hast-util-to-string": "^3.0.1",
+    "unist-util-visit": "^5.0.0"
+  },
+  "devDependencies": {
+    "@mdx-js/mdx": "^3.1.0",
+    "rehype-stringify": "^10.0.1",
+    "remark-parse": "^11.0.0",
+    "remark-rehype": "^11.1.1",
+    "unified": "^11.0.5",
+    "wiremark": "file:../.."
+  },
+  "scripts": {
+    "test": "node --test test/*.test.mjs"
+  }
+}

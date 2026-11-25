@@ -1,0 +1,25 @@
+@device desktop
+screen pricing "Pricing"
+  navbar "Pricing"
+  stack pad=32 gap=24 align=center
+    h1 "Simple pricing"
+    text "Start free. Upgrade when your team grows." muted
+    grid cols=3 gap=16
+      card "Free"
+        h2 "$0"
+        text "1 workspace, 3 docs"
+        button "Start free" -> signup
+      card "Pro"
+        badge "Popular" tone=info
+        h2 "$5 per seat"
+        text "Unlimited docs, history"
+        button "Start trial" primary -> signup
+      card "Enterprise"
+        h2 "Custom"
+        text "SSO and audit logs"
+        button "Talk to sales" -> signup
+screen signup "Sign up"
+  stack pad=32 gap=12
+    h2 "Create your account"
+    input "Email" type=email
+    button "Continue" primary

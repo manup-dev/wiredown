@@ -1,0 +1,360 @@
+[
+ {
+  "id": "sign-in-reset",
+  "request": "Design a sign in screen with email, password, remember me and a forgot password link, plus a password reset screen. Show the wrong password state.",
+  "minScreens": 2,
+  "kinds": [
+   "input",
+   "button",
+   "link"
+  ],
+  "links": [
+   [
+    "sign in",
+    "reset"
+   ]
+  ]
+ },
+ {
+  "id": "signup-two-step",
+  "request": "Design a two step signup: account details, then an email check where the user types a code, then a welcome screen.",
+  "minScreens": 3,
+  "kinds": [
+   "input",
+   "button"
+  ],
+  "links": [
+   [
+    "account",
+    "check"
+   ],
+   [
+    "check",
+    "welcome"
+   ]
+  ]
+ },
+ {
+  "id": "onboarding-carousel",
+  "request": "Design a three step onboarding carousel for a new app, each step with an illustration, a Next button and a Skip link, ending at the home screen.",
+  "minScreens": 4,
+  "kinds": [
+   "image",
+   "button",
+   "link"
+  ],
+  "links": [
+   [
+    "welcome",
+    "share"
+   ],
+   [
+    "share",
+    "ready"
+   ]
+  ]
+ },
+ {
+  "id": "checkout",
+  "request": "Design a checkout: cart, shipping address, card payment, and a confirm modal before the order is placed, then a confirmation screen.",
+  "minScreens": 4,
+  "kinds": [
+   "input",
+   "select",
+   "modal",
+   "button"
+  ],
+  "links": [
+   [
+    "cart",
+    "shipping"
+   ],
+   [
+    "shipping",
+    "payment"
+   ],
+   [
+    "payment",
+    "confirmation"
+   ]
+  ]
+ },
+ {
+  "id": "order-history",
+  "request": "Design an order history list with search, and an order detail screen reached from a list item.",
+  "minScreens": 2,
+  "kinds": [
+   "list",
+   "item",
+   "table"
+  ],
+  "links": [
+   [
+    "order history",
+    "order detail"
+   ]
+  ]
+ },
+ {
+  "id": "admin-users",
+  "request": "Design an admin users table with search and an invite button, and a delete confirmation modal. After deleting, show a confirmation screen.",
+  "minScreens": 2,
+  "kinds": [
+   "table",
+   "modal",
+   "button"
+  ],
+  "links": [
+   [
+    "users",
+    "deleted"
+   ]
+  ]
+ },
+ {
+  "id": "settings-tabs",
+  "request": "Design a settings page with tabs for Profile, Notifications and Security. Show the Profile and Notifications tabs as two screens.",
+  "minScreens": 2,
+  "kinds": [
+   "tabs",
+   "tab",
+   "toggle"
+  ],
+  "links": [
+   [
+    "profile",
+    "notification"
+   ]
+  ]
+ },
+ {
+  "id": "notifications",
+  "request": "Design a notifications list with an empty state variant, and a screen for opening one notification.",
+  "minScreens": 2,
+  "kinds": [
+   "list",
+   "item"
+  ],
+  "links": [
+   [
+    "notifications",
+    "comment"
+   ]
+  ]
+ },
+ {
+  "id": "search-results",
+  "request": "Design a search screen with a results list and a variant for no results, plus the document screen a result opens.",
+  "minScreens": 2,
+  "kinds": [
+   "input",
+   "list"
+  ],
+  "links": [
+   [
+    "search",
+    "product roadmap"
+   ]
+  ]
+ },
+ {
+  "id": "file-upload",
+  "request": "Design a file upload screen with a drop area, a list of files with progress, and a toast while uploading. Add a screen listing all files.",
+  "minScreens": 2,
+  "kinds": [
+   "toast",
+   "list",
+   "button"
+  ],
+  "links": [
+   [
+    "files",
+    "upload"
+   ]
+  ]
+ },
+ {
+  "id": "pricing",
+  "request": "Design a pricing page with three plan cards (Free, Pro, Enterprise) whose buttons lead to a sign up screen.",
+  "minScreens": 2,
+  "kinds": [
+   "card",
+   "button",
+   "grid"
+  ],
+  "links": [
+   [
+    "pricing",
+    "sign up"
+   ]
+  ]
+ },
+ {
+  "id": "dashboard-kpi",
+  "request": "Design a dashboard with three KPI cards, a chart image and a table, and a report screen opened from an Export button.",
+  "minScreens": 2,
+  "kinds": [
+   "card",
+   "image",
+   "table"
+  ],
+  "links": [
+   [
+    "dashboard",
+    "report"
+   ]
+  ]
+ },
+ {
+  "id": "chat-thread",
+  "request": "Design a chat: a list of conversations and a thread screen with a message box and send button.",
+  "minScreens": 2,
+  "kinds": [
+   "list",
+   "input",
+   "button"
+  ],
+  "links": [
+   [
+    "messages",
+    "ada"
+   ]
+  ]
+ },
+ {
+  "id": "calendar-booking",
+  "request": "Design a calendar booking flow: pick a day and time, enter details, then a booked confirmation.",
+  "minScreens": 3,
+  "kinds": [
+   "button",
+   "input",
+   "grid"
+  ],
+  "links": [
+   [
+    "pick",
+    "details"
+   ],
+   [
+    "details",
+    "booked"
+   ]
+  ]
+ },
+ {
+  "id": "profile-edit",
+  "request": "Design a profile edit screen with a variant showing an error on the email field, and the profile view it returns to.",
+  "minScreens": 2,
+  "kinds": [
+   "input",
+   "textarea",
+   "avatar"
+  ],
+  "links": [
+   [
+    "edit profile",
+    "profile"
+   ]
+  ]
+ },
+ {
+  "id": "invite-sheet",
+  "request": "Design a team screen with an Invite teammates button that opens a bottom sheet with emails and a role select, and a screen shown after the invites are sent.",
+  "minScreens": 2,
+  "kinds": [
+   "sheet",
+   "select",
+   "button"
+  ],
+  "links": [
+   [
+    "team",
+    "invites sent"
+   ]
+  ]
+ },
+ {
+  "id": "two-factor",
+  "request": "Design a two factor setup: intro, scan a QR code, enter the 6 digit code, then show backup codes.",
+  "minScreens": 4,
+  "kinds": [
+   "image",
+   "input",
+   "button"
+  ],
+  "links": [
+   [
+    "two-factor",
+    "scan"
+   ],
+   [
+    "scan",
+    "enter the code"
+   ],
+   [
+    "enter the code",
+    "backup"
+   ]
+  ]
+ },
+ {
+  "id": "cancel-subscription",
+  "request": "Design a cancel subscription flow: plan page, a survey asking why, a final confirmation, and a cancelled screen.",
+  "minScreens": 4,
+  "kinds": [
+   "radio",
+   "textarea",
+   "button"
+  ],
+  "links": [
+   [
+    "your plan",
+    "why"
+   ],
+   [
+    "why",
+    "confirm"
+   ],
+   [
+    "confirm",
+    "cancelled"
+   ]
+  ]
+ },
+ {
+  "id": "mobile-tabs",
+  "request": "Design a mobile app shell with a bottom tab bar (Home, Search, Profile) and one screen per tab.",
+  "minScreens": 3,
+  "kinds": [
+   "tabbar",
+   "item"
+  ],
+  "links": [
+   [
+    "home",
+    "search"
+   ],
+   [
+    "search",
+    "profile"
+   ]
+  ]
+ },
+ {
+  "id": "support-ticket",
+  "request": "Design a support ticket form with email, topic, subject and description, and a confirmation screen after submitting.",
+  "minScreens": 2,
+  "kinds": [
+   "input",
+   "select",
+   "textarea",
+   "button"
+  ],
+  "links": [
+   [
+    "contact support",
+    "ticket sent"
+   ]
+  ]
+ }
+]

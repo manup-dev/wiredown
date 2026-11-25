@@ -1,0 +1,20 @@
+@device phone
+@title "Sign in"
+screen login "Sign in"
+  stack pad=24 gap=16
+    h1 "Welcome back" align=center
+    input "Email" placeholder="you@company.com" #email
+    input "Password" type=password #password
+    row justify=between
+      checkbox "Remember me" checked
+      link "Forgot password?" -> reset
+    button "Sign in" primary w=fill #submit note="Disabled until both fields are filled"
+
+variant login-error of login "Wrong password"
+  #password error="That password is not right"
+
+screen reset "Reset password"
+  navbar "Reset password" back -> login
+  stack pad=24 gap=16
+    input "Email" #reset-email
+    button "Send link" primary w=fill

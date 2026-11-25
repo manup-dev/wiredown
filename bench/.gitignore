@@ -1,0 +1,3 @@
+node_modules/
+results/fake.json
+results/*.tmp.json

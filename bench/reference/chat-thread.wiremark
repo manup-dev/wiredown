@@ -1,0 +1,15 @@
+@device phone
+screen chats "Messages"
+  navbar "Messages"
+  list
+    item "Ada Lovelace" "See you at 3?" icon=user -> thread
+    item "Grace Hopper" "Shipped it" icon=user -> thread
+screen thread "Ada Lovelace"
+  navbar "Ada Lovelace" back -> chats
+  stack pad=16 gap=8
+    text "Are we still on for the review?"
+    text "Yes, 3pm works." muted align=end
+    spacer grow=1
+    row gap=8
+      input "Message" grow=1 #message
+      button "Send" primary icon=send

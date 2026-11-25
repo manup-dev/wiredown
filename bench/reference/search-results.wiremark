@@ -1,0 +1,15 @@
+@device phone
+screen search "Search"
+  navbar "Search"
+  stack pad=16 gap=12
+    input "Search documents" type=search placeholder="Try roadmap" #query
+    list
+      item "Product roadmap" "Edited yesterday" icon=search -> doc
+      item "Roadmap review notes" "Edited last week" icon=search -> doc
+variant search-none of search "No results"
+  #query error="No matches for roadmapp"
+screen doc "Product roadmap"
+  navbar "Product roadmap" back -> search
+  stack pad=16 gap=12
+    h1 "Product roadmap"
+    text "Q3 priorities and owners."

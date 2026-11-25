@@ -1,0 +1,26 @@
+@device phone
+screen pick "Pick a time"
+  navbar "Book a call"
+  stack pad=20 gap=16
+    h2 "Choose a day"
+    grid cols=3 gap=8
+      button "Mon 12"
+      button "Tue 13" selected
+      button "Wed 14"
+    h3 "Times"
+    grid cols=2 gap=8
+      button "9:00"
+      button "10:30" selected
+    button "Continue" primary w=fill -> details
+screen details "Your details"
+  navbar "Your details" back -> pick
+  stack pad=20 gap=12
+    input "Name" #name
+    input "Email" type=email #email
+    textarea "What should we cover?" rows=3
+    button "Confirm booking" primary w=fill -> booked
+screen booked "Booked"
+  stack pad=20 gap=12 align=center
+    icon icon=check
+    h1 "You are booked"
+    text "Tuesday 13th at 10:30. A calendar invite is on its way."

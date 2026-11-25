@@ -1,0 +1,25 @@
+@device phone
+screen step1 "Welcome"
+  stack pad=24 gap=16 align=center
+    image "Welcome illustration" h=240
+    h1 "Write together"
+    text "Docs your whole team edits at the same time." muted
+    button "Next" primary w=fill -> step2
+    link "Skip" muted -> home
+screen step2 "Share"
+  stack pad=24 gap=16 align=center
+    image "Sharing illustration" h=240
+    h1 "Share in one tap"
+    text "Send a link and choose who can edit." muted
+    button "Next" primary w=fill -> step3
+    link "Skip" muted -> home
+screen step3 "Ready"
+  stack pad=24 gap=16 align=center
+    image "Ready illustration" h=240
+    h1 "You are ready"
+    text "Start with a blank page or a template." muted
+    button "Get started" primary w=fill -> home
+screen home "Home"
+  navbar "Home"
+  stack pad=24
+    text "Nothing here yet."

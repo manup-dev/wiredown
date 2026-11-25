@@ -1,0 +1,17 @@
+@device laptop
+screen ticket "Contact support"
+  navbar "Support"
+  stack pad=24 gap=12 w=560
+    h2 "How can we help?"
+    input "Your email" type=email #email
+    select "Topic" options="Billing, Bug, Question" #topic
+    input "Subject" #subject
+    textarea "Describe the problem" rows=6 #body
+    checkbox "Send me a copy"
+    button "Submit ticket" primary -> sent
+screen sent "Ticket sent"
+  stack pad=24 gap=12 align=center
+    icon icon=check
+    h2 "We got it"
+    text "Ticket #2381. We reply within one business day."
+    button "Back to help" -> ticket

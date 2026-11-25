@@ -1,0 +1,15 @@
+@device phone
+screen inbox "Notifications"
+  navbar "Notifications"
+  list #feed
+    item "Grace commented on Roadmap" "2 minutes ago" icon=message -> thread
+    item "Alan shared Q3 plan with you" "1 hour ago" icon=users
+    item "Your export is ready" "Yesterday" icon=check muted
+variant inbox-empty of inbox "Nothing new"
+  #feed hide
+screen thread "Comment"
+  navbar "Comment" back -> inbox
+  stack pad=20 gap=12
+    text "Can we move the launch to May?"
+    input "Reply" #reply
+    button "Send" primary

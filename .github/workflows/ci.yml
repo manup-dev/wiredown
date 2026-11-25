@@ -1,0 +1,63 @@
+# Runs every test suite on Node 20, 22 and 24, and the playground's browser tests.
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [20, 22, 24]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ matrix.node }}
+      - name: Core (with markdown-it for the plugin test; package.json unchanged)
+        run: npm install --no-save --no-package-lock --ignore-scripts markdown-it@14.3.0 && npm test
+      - name: OpenUI export check
+        working-directory: integrations/openui-check
+        run: npm ci && npm test
+      - name: Browser script
+        working-directory: integrations/browser-test
+        run: npm ci && npm test
+      - name: rehype-wiremark
+        working-directory: integrations/rehype
+        run: npm ci && npm test
+      - name: VS Code extension
+        working-directory: integrations/vscode
+        run: npm ci && npm run build && npm test
+      - name: Obsidian plugin
+        working-directory: integrations/obsidian
+        run: npm ci && npm run build && npm test
+      - name: Benchmark harness (no network, no keys)
+        working-directory: bench
+        run: npm ci && npm test
+
+  playground:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+      - name: Install
+        working-directory: playground
+        run: npm ci && npx playwright install --with-deps chromium
+      - name: Unit tests
+        working-directory: playground
+        run: npm test
+      - name: Browser tests
+        working-directory: playground
+        run: npm run e2e
