@@ -190,7 +190,7 @@ function run(body, info) {
 }
 
 export function parseMock(body, info) {
-  if (typeof body !== 'string') return bad('bad_value', 'A wiremark block is text.');
+  if (typeof body !== 'string') return bad('bad_value', 'A wiredown block is text.');
   try {
     return run(body, typeof info === 'string' ? info : '');
   } catch {

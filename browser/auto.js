@@ -1,20 +1,20 @@
-// Draws every wiremark/screens code block on a page.
+// Draws every wiredown/screens code block on a page.
 //   <script type="module" src=".../browser/auto.js"></script>
-// Add data-wiremark-manual to the script tag to call render() yourself.
+// Add data-wiredown-manual to the script tag to call render() yourself.
 // blockIndex keeps drawn ids unique across blocks on one page.
 // Imports only ../src/index.js (relative) so it works unbuilt from a CDN.
 import { renderMockBlock } from '../src/index.js';
 
-const SELECTOR = ['pre > code.language-wiremark', 'pre > code.language-screens', 'pre > code.lang-wiremark', 'pre > code.lang-screens',
-  'pre.language-wiremark', 'pre.language-screens', 'pre.lang-wiremark', 'pre.lang-screens',
-  'div.language-wiremark pre', 'div.language-screens pre'].join(',');
-const CONTAINER = 'div.language-wiremark, div.language-screens';
+// `wiremark` was the format's first name; pages that still use it keep drawing.
+const LANGS = ['wiredown', 'screens', 'wiremark'];
+const SELECTOR = LANGS.flatMap((l) => [`pre > code.language-${l}`, `pre > code.lang-${l}`, `pre.language-${l}`, `pre.lang-${l}`, `div.language-${l} pre`]).join(',');
+const CONTAINER = LANGS.map((l) => `div.language-${l}`).join(', ');
 let count = 0;
 
 function addStyles(doc) {
-  if (doc.querySelector('link[data-wiremark]')) return;
+  if (doc.querySelector('link[data-wiredown]')) return;
   const link = doc.createElement('link');
-  link.rel = 'stylesheet'; link.href = new URL('../wiremark.css', import.meta.url).href; link.setAttribute('data-wiremark', '');
+  link.rel = 'stylesheet'; link.href = new URL('../wiredown.css', import.meta.url).href; link.setAttribute('data-wiredown', '');
   doc.head.appendChild(link);
 }
 
@@ -28,7 +28,7 @@ export function render(root = document) {
     const box = pre.closest(CONTAINER);
     if (box) { const all = box.querySelectorAll('pre'); if (all[all.length - 1] !== pre) continue; }
     const code = el.tagName === 'CODE' ? el : el.querySelector('code') ?? el;
-    const info = (code.getAttribute('data-meta') || pre.getAttribute('data-meta') || 'wiremark').trim();
+    const info = (code.getAttribute('data-meta') || pre.getAttribute('data-meta') || 'wiredown').trim();
     const tpl = doc.createElement('template');
     // The library's output is trusted: escaped text, allowlisted SVG, no script.
     tpl.innerHTML = renderMockBlock(code.textContent ?? '', info, { blockIndex: count++ });
@@ -42,7 +42,7 @@ export function render(root = document) {
 const clean = (u) => String(u).split('#')[0].split('?')[0];
 
 // Finds the <script type="module"> that loaded this file. Exact match first (query and
-// fragment ignored); else, because CDNs redirect (wiremark@0.1 -> wiremark@0.1.3), the one
+// fragment ignored); else, because CDNs redirect (wiredown@0.1 -> wiredown@0.1.3), the one
 // module tag whose path ends in /browser/auto.js. Two such tags: none claims it.
 export function findOwnScript(doc, moduleUrl) {
   // A malformed src on some other script tag must never stop this one from drawing: skip it.
@@ -59,7 +59,7 @@ export function findOwnScript(doc, moduleUrl) {
 }
 
 const script = typeof document !== 'undefined' ? findOwnScript(document, import.meta.url) : null;
-if (script && !script.hasAttribute('data-wiremark-manual')) {
+if (script && !script.hasAttribute('data-wiredown-manual')) {
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => render(document), { once: true });
   else render(document);
 }

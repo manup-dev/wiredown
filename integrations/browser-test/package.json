@@ -1,1 +1,1 @@
-{ "name": "wiremark-browser-test", "private": true, "type": "module", "scripts": { "test": "node --test auto.test.mjs" }, "devDependencies": { "jsdom": "^25.0.1" } }
+{ "name": "wiredown-browser-test", "private": true, "type": "module", "scripts": { "test": "node --test auto.test.mjs" }, "devDependencies": { "jsdom": "^25.0.1" } }

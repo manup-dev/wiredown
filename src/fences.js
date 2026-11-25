@@ -1,6 +1,6 @@
-// Wiremark fences in a markdown file, for tools that lint or render a file outside a markdown parser.
+// Wiredown fences in a markdown file, for tools that lint or render a file outside a markdown parser.
 // Top-level fences only (CommonMark rules for opening and closing); container fences are not scanned.
-import { fenceLang, isWiremarkLang } from './markdownit.js';
+import { fenceLang, isWiredownLang } from './markdownit.js';
 
 export function findFences(markdown) {
   const lines = String(markdown ?? '').split(/\r?\n/);
@@ -30,7 +30,7 @@ export function findFences(markdown) {
 
 function push(out, f) {
   const lang = fenceLang(f.info);
-  if (!isWiremarkLang(lang)) return;
+  if (!isWiredownLang(lang)) return;
   out.push({
     info: f.info,
     lang,

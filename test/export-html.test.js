@@ -3,8 +3,8 @@ import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { toHTML } from '../src/export/index.js'
 
-const login = readFileSync(new URL('./fixtures/login.wiremark', import.meta.url), 'utf8')
-const kinds = readFileSync(new URL('./fixtures/kinds.wiremark', import.meta.url), 'utf8')
+const login = readFileSync(new URL('./fixtures/login.wiredown', import.meta.url), 'utf8')
+const kinds = readFileSync(new URL('./fixtures/kinds.wiredown', import.meta.url), 'utf8')
 
 test('one file per screen and variant, semantic tags', () => {
   const r = toHTML(login)

@@ -1,7 +1,7 @@
 // Stylesheet for hosts that have one: figure layout and the prototype view only, never paint
 // (the SVG carries its own). Without it every screen shows, stacked, and links still jump.
 // The prototype rules use :has; where :has is missing they drop out and every screen shows.
-export const WIREMARK_CSS = [
+export const WIREDOWN_CSS = [
   '.wm{margin:1.5em 0}',
   '.wm .wm-strip{display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start}',
   '.wm .wm-variants{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start}',

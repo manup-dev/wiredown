@@ -2,9 +2,9 @@
 import { readFileSync } from 'node:fs';
 import { lint, formatProblem, render, exportFiles, contract, UsageError } from './cli-lib.js';
 
-const HELP = `wiremark <command>
+const HELP = `wiredown <command>
 
-  lint <files...> [--json]                       check .wiremark files and wiremark fences in .md files
+  lint <files...> [--json]                       check .wiredown files and wiredown fences in .md files
   render <file> [--out dir] [--format svg|html]  draw each screen as SVG, or one HTML page
   export <file> --to openui|html [--out dir]     starter code per screen
   contract                                       print the language reference for an AI model
@@ -45,6 +45,6 @@ try {
   if (cmd === 'contract') { process.stdout.write(contract() + '\n'); process.exit(0); }
   throw new UsageError(`unknown command ${cmd}`);
 } catch (err) {
-  console.error(err instanceof UsageError ? `wiremark: ${err.message}\n\n${HELP}` : err.stack);
+  console.error(err instanceof UsageError ? `wiredown: ${err.message}\n\n${HELP}` : err.stack);
   process.exit(2);
 }

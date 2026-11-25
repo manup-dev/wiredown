@@ -12,4 +12,4 @@ await build({
 });
 
 // The core stylesheet, with the host's page background as the opaque surface.
-writeFileSync('styles.css', readFileSync('../../wiremark.css', 'utf8') + '.wm{--wm-bg:var(--background-primary)}\n');
+writeFileSync('styles.css', readFileSync('../../wiredown.css', 'utf8') + '.wm{--wm-bg:var(--background-primary)}\n');

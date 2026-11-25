@@ -7,7 +7,7 @@ const prompt = { id: 'p', minScreens: 2, kinds: ['button', 'input'], links: [['s
 const good = 'screen a "Sign in"\n  input "Email"\n  link "Forgot?" -> b\n  button "Go"\nscreen b "Reset password"\n  input "Email"\n'
 
 test('extracts the fence or a bare parseable answer', () => {
-  assert.equal(extractFence('Here:\n```wiremark\n' + good + '```\nDone'), good)
+  assert.equal(extractFence('Here:\n```wiredown\n' + good + '```\nDone'), good)
   assert.equal(extractFence(good), good)
   assert.equal(extractFence('no mock here'), null)
 })
@@ -27,10 +27,10 @@ test('a link to back or a missing screen never throws', () => {
 test('every reference answer passes its own prompt and lints clean', () => {
   const prompts = JSON.parse(readFileSync(new URL('../prompts.json', import.meta.url), 'utf8'))
   assert.equal(prompts.length, 20)
-  const files = readdirSync(new URL('../reference/', import.meta.url)).filter((f) => f.endsWith('.wiremark'))
+  const files = readdirSync(new URL('../reference/', import.meta.url)).filter((f) => f.endsWith('.wiredown'))
   assert.equal(files.length, 20)
   for (const p of prompts) {
-    const body = readFileSync(new URL(`../reference/${p.id}.wiremark`, import.meta.url), 'utf8')
+    const body = readFileSync(new URL(`../reference/${p.id}.wiredown`, import.meta.url), 'utf8')
     const s = scoreAnswer(p, body)
     assert.equal(s.pass, true, `${p.id}: ${JSON.stringify(s)}`)
     assert.equal(s.errors, 0)

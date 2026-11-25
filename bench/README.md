@@ -1,14 +1,14 @@
-# wiremark benchmark
+# wiredown benchmark
 
-Question: when a model reads wiremark's `AI_CONTRACT` and is asked for a screen flow, how often does the first answer lint clean and cover the request, and how often after one repair turn?
+Question: when a model reads wiredown's `AI_CONTRACT` and is asked for a screen flow, how often does the first answer lint clean and cover the request, and how often after one repair turn?
 
 ## What is measured
 
 - 20 prompts in `prompts.json` (sign in, checkout, settings, pricing, and so on). Each names a minimum screen count, the element kinds that must appear, and links that must exist (a screen whose label contains A links to a screen whose label contains B).
 - For each prompt and model: one call with the contract as the system message, then, if the answer does not pass, one repair turn that shows the lint errors.
 - A pass means the block parses, has zero lint errors and meets all three checks. Variant screens do not count toward the minimum.
-- Output tokens per screen, and the same screens in three encodings (wiremark, OpenUI, HTML) counted with the o200k tokenizer.
-- `reference/*.wiremark` holds one hand-written answer per prompt. Each one passes its own prompt, which pins the checks.
+- Output tokens per screen, and the same screens in three encodings (wiredown, OpenUI, HTML) counted with the o200k tokenizer.
+- `reference/*.wiredown` holds one hand-written answer per prompt. Each one passes its own prompt, which pins the checks.
 
 ## Free commands (no keys, no network)
 

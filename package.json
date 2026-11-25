@@ -1,25 +1,25 @@
 {
-  "name": "wiremark",
+  "name": "wiredown",
   "version": "0.1.0",
   "description": "UI screens and flows as markdown: a fenced text format drawn as safe static SVG. A wireframe format made for AI to write.",
   "license": "MIT",
-  "repository": { "type": "git", "url": "git+https://github.com/manup-dev/wiremark.git" },
-  "homepage": "https://manup-dev.github.io/wiremark/",
-  "bugs": { "url": "https://github.com/manup-dev/wiremark/issues" },
+  "repository": { "type": "git", "url": "git+https://github.com/manup-dev/wiredown.git" },
+  "homepage": "https://manup-dev.github.io/wiredown/",
+  "bugs": { "url": "https://github.com/manup-dev/wiredown/issues" },
   "type": "module",
   "keywords": ["wireframe", "mockup", "markdown", "svg", "ui", "prototype", "spec", "ai", "llm", "diagram", "product-management"],
   "engines": { "node": ">=20" },
   "main": "src/index.js",
   "types": "src/index.d.ts",
-  "bin": { "wiremark": "bin/wiremark.js" },
+  "bin": { "wiredown": "bin/wiredown.js" },
   "exports": {
     ".": { "types": "./src/index.d.ts", "default": "./src/index.js" },
     "./export": { "types": "./src/export/index.d.ts", "default": "./src/export/index.js" },
     "./fences": { "types": "./src/fences.d.ts", "default": "./src/fences.js" },
     "./browser": "./browser/auto.js",
-    "./wiremark.css": "./wiremark.css",
+    "./wiredown.css": "./wiredown.css",
     "./package.json": "./package.json"
   },
-  "files": ["src", "bin", "browser", "wiremark.css", "LICENSE", "README.md"],
+  "files": ["src", "bin", "browser", "wiredown.css", "LICENSE", "README.md"],
   "scripts": { "test": "node --test test/*.test.js" }
 }

@@ -11,7 +11,7 @@ const unroot = (svg) => {
   assert.ok(svg.slice(0, svg.indexOf('>')).includes(ROOT), 'on the root svg');
   return svg.replace(ROOT, '');
 };
-const LOGIN = readFileSync(new URL('./fixtures/login.wiremark', import.meta.url), 'utf8');
+const LOGIN = readFileSync(new URL('./fixtures/login.wiredown', import.meta.url), 'utf8');
 
 function mockOf(src, look) {
   const r = parseMock(src);

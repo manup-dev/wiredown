@@ -2,12 +2,12 @@
 
 Intro.
 
-```wiremark
+```wiredown
 screen a "A"
   button "Go" -> b
 ```
 
-```wiremark
+```wiredown
 screen b "B"
   gadget "x"
 ```

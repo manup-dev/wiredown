@@ -6,9 +6,9 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-const bin = fileURLToPath(new URL('../bin/wiremark.js', import.meta.url))
+const bin = fileURLToPath(new URL('../bin/wiredown.js', import.meta.url))
 const doc = fileURLToPath(new URL('./fixtures/cli/doc.md', import.meta.url))
-const login = fileURLToPath(new URL('./fixtures/login.wiremark', import.meta.url))
+const login = fileURLToPath(new URL('./fixtures/login.wiredown', import.meta.url))
 const run = (...args) => spawnSync(process.execPath, [bin, ...args], { encoding: 'utf8' })
 
 test('lint maps lines to the file and exits 1 on errors', () => {
@@ -37,7 +37,7 @@ test('export --to openui|html, contract, usage', () => {
   const out = mkdtempSync(join(tmpdir(), 'wm-'))
   assert.equal(run('export', login, '--to', 'openui', '--out', out).status, 0)
   assert.ok(readdirSync(out).some((f) => f.endsWith('.openui')))
-  assert.match(run('contract').stdout, /wiremark/)
+  assert.match(run('contract').stdout, /wiredown/)
   assert.equal(run('bogus').status, 2)
   assert.equal(run('lint').status, 2)
   assert.equal(run('lint', '/no/such/file.md').status, 2)
@@ -49,7 +49,7 @@ import { writeFileSync } from 'node:fs'
 const tmpMd = (text) => { const d = mkdtempSync(join(tmpdir(), 'wm-')); const f = join(d, 'x.md'); writeFileSync(f, text); return f }
 
 test('export keeps two same-named fences apart', () => {
-  const f = tmpMd('```wiremark\nscreen a\n  text "one"\n```\n\n```wiremark\nscreen a\n  text "two"\n```\n')
+  const f = tmpMd('```wiredown\nscreen a\n  text "one"\n```\n\n```wiredown\nscreen a\n  text "two"\n```\n')
   const out = mkdtempSync(join(tmpdir(), 'wm-'))
   const r = run('export', f, '--to', 'openui', '--out', out)
   assert.equal(r.status, 0, r.stderr)
@@ -65,7 +65,7 @@ test('flags need values; clean lint prints nothing', () => {
 })
 
 test('info-string warning maps to the opening line', () => {
-  const f = tmpMd('# T\n\n```wiremark lok=clean\nscreen a\n  text "hi"\n```\n')
+  const f = tmpMd('# T\n\n```wiredown lok=clean\nscreen a\n  text "hi"\n```\n')
   const r = run('lint', f)
   assert.equal(r.status, 0)
   assert.match(r.stdout, /x\.md:3:\d+ warning /)
@@ -76,7 +76,7 @@ test('an unknown --format is a usage error; the title is escaped', () => {
   assert.equal(r.status, 2)
   assert.match(r.stderr, /--format must be svg or html/)
   const d = mkdtempSync(join(tmpdir(), 'wm-')); const f = join(d, 'a&b.md')
-  writeFileSync(f, '```wiremark\nscreen a\n  text "hi"\n```\n')
+  writeFileSync(f, '```wiredown\nscreen a\n  text "hi"\n```\n')
   const out = mkdtempSync(join(tmpdir(), 'wm-'))
   assert.equal(run('render', f, '--format', 'html', '--out', out).status, 0)
   assert.match(readFileSync(join(out, 'a&b.html'), 'utf8'), /<title>a&amp;b<\/title>/)

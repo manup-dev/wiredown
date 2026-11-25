@@ -13,13 +13,14 @@ export function fenceLang(info) {
   return String(info ?? '').trim().split(/\s+/)[0];
 }
 
-export const isWiremarkLang = (lang) => lang === 'wiremark' || lang === 'screens';
+// `wiremark` was the format's first name; blocks written with it keep drawing.
+export const isWiredownLang = (lang) => lang === 'wiredown' || lang === 'screens' || lang === 'wiremark';
 
 const MAX_INDEX = 9999;
 /** A host's `env.wmBase`: a non-negative integer (at most 9999), else 0. */
 const baseOf = (v) => (Number.isInteger(v) && v >= 0 ? Math.min(v, MAX_INDEX) : 0);
 
-export function wiremarkPlugin(md, opts = {}) {
+export function wiredownPlugin(md, opts = {}) {
   const defer = opts && typeof opts.defer === 'function' ? opts.defer : (_env, html) => html;
   // A fresh count per render, even when a host reuses its env (a reused env would otherwise keep the last count).
   if (md.core && md.core.ruler && typeof md.core.ruler.push === 'function') {
@@ -29,7 +30,7 @@ export function wiremarkPlugin(md, opts = {}) {
   const prev = rules.fence || ((tokens, idx, options, env, self) => self.renderToken(tokens, idx, options));
   rules.fence = (tokens, idx, options, env, self) => {
     const t = tokens[idx];
-    if (!isWiremarkLang(fenceLang(t.info))) return prev(tokens, idx, options, env, self);
+    if (!isWiredownLang(fenceLang(t.info))) return prev(tokens, idx, options, env, self);
     const scope = env && typeof env === 'object' ? env : {};
     const n = Number.isInteger(scope.wmCount) && scope.wmCount >= 0 ? scope.wmCount : 0;
     scope.wmCount = n + 1;

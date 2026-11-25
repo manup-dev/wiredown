@@ -262,7 +262,7 @@ function assertLinksResolve(html, what) {
 
 test('figure HTML: hostile labels through the parser, every look and view', () => {
   for (const label of LABELS) {
-    for (const info of ['wiremark', 'screens look=clean', 'wiremark view=prototype', 'wiremark look=clean view=prototype']) {
+    for (const info of ['wiredown', 'screens look=clean', 'wiredown view=prototype', 'wiredown look=clean view=prototype']) {
       for (const bi of [0, 3, 49]) {
         const html = renderMockBlock(hostileBlock(label), info, { blockIndex: bi });
         assert.ok(html.startsWith('<figure'), `figure: ${JSON.stringify(label)}`);
@@ -286,7 +286,7 @@ test('figure HTML: seeded fuzz through the parser and straight into the tree', (
   assert.equal(base.ok, true, JSON.stringify(base.errors));
   for (let k = 0; k < 300; k++) {
     const s = fuzzString();
-    assertSafeHtml(renderMockBlock(hostileBlock(s.replace(/\n/g, ' ')), k % 3 ? 'wiremark' : 'wiremark view=prototype', { blockIndex: k % 60 }), `parse #${k}`);
+    assertSafeHtml(renderMockBlock(hostileBlock(s.replace(/\n/g, ' ')), k % 3 ? 'wiredown' : 'wiredown view=prototype', { blockIndex: k % 60 }), `parse #${k}`);
     const mock = structuredClone(base.mock);
     mock.title = s;
     mock.look = k % 2 ? 'clean' : 'wire';

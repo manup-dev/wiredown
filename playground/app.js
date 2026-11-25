@@ -1,6 +1,6 @@
-// The wiremark playground: type on the left, see the drawing on the right.
+// The wiredown playground: type on the left, see the drawing on the right.
 // Everything runs in the page: no server, no request. Share links carry the text in the URL hash.
-import { renderMockBlock, parseMock, renderScreenSvg, lintMock, slug, AI_CONTRACT, WIREMARK_CSS } from '../src/index.js';
+import { renderMockBlock, parseMock, renderScreenSvg, lintMock, slug, AI_CONTRACT, WIREDOWN_CSS } from '../src/index.js';
 import { toOpenUI, toHTML } from '../src/export/index.js';
 import { encodeShare, decodeShare } from './share.js';
 import { EXAMPLES } from './examples.js';
@@ -25,7 +25,7 @@ function toast(message) {
   toastTimer = setTimeout(() => toastEl.classList.remove('show'), 3200);
 }
 
-const info = () => 'wiremark' + (look.value ? ' look=' + look.value : '') + (view.value ? ' view=' + view.value : '');
+const info = () => 'wiredown' + (look.value ? ' look=' + look.value : '') + (view.value ? ' view=' + view.value : '');
 
 // ── Drawing, problems and the gutter ──
 let parsed = null;
@@ -48,7 +48,7 @@ function render() {
   paintGutter(text, new Set(found.map((p) => p.line)));
   syncExamples(text);
   if (selectedTab()) fillExport();
-  store.set('wiremark.draft', text);
+  store.set('wiredown.draft', text);
   layout.decorate();
   select.refresh();
 }
@@ -183,7 +183,7 @@ function download(name, type, text) {
   a.href = url; a.download = name; document.body.append(a); a.click(); a.remove();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
-const nameBase = () => (parsed?.ok && parsed.mock.title ? slug(parsed.mock.title) : '') || 'wiremark';
+const nameBase = () => (parsed?.ok && parsed.mock.title ? slug(parsed.mock.title) : '') || 'wiredown';
 
 // The link is encoded as the text changes, so Share copies at once (inside the click, as browsers like).
 let shareFor = { text: null, hash: null };
@@ -224,8 +224,8 @@ $('copysvg').addEventListener('click', async () => {
 });
 $('html').addEventListener('click', () => {
   if (!parsed?.ok) return;
-  const title = (parsed.mock.title || 'wiremark screens').replace(/[<>&"]/g, (c) => `&#${c.charCodeAt(0)};`);
-  const page = `<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n<title>${title}</title>\n<style>\nbody{margin:24px;font:15px/1.45 system-ui,sans-serif;color:#1b1d21;background:#fff}\n.wm{--wm-bg:#fff}\n${WIREMARK_CSS}\n</style>\n</head>\n<body>\n${renderMockBlock(source.value, info())}\n</body>\n</html>\n`;
+  const title = (parsed.mock.title || 'wiredown screens').replace(/[<>&"]/g, (c) => `&#${c.charCodeAt(0)};`);
+  const page = `<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n<title>${title}</title>\n<style>\nbody{margin:24px;font:15px/1.45 system-ui,sans-serif;color:#1b1d21;background:#fff}\n.wm{--wm-bg:#fff}\n${WIREDOWN_CSS}\n</style>\n</head>\n<body>\n${renderMockBlock(source.value, info())}\n</body>\n</html>\n`;
   download(`${nameBase()}.html`, 'text/html', page);
 });
 
@@ -237,7 +237,7 @@ function selectTab(tab, focus) {
   exportOut.setAttribute('aria-labelledby', tab.id);
   exportBox.hidden = false;
   if (focus) tab.focus();
-  store.set('wiremark.tab', tab.id);
+  store.set('wiredown.tab', tab.id);
   fillExport();
 }
 function fillExport() {
@@ -262,7 +262,7 @@ function closeExport() {
   const back = selectedTab();
   for (const t of tabs) { t.setAttribute('aria-selected', 'false'); t.tabIndex = t === tabs[0] ? 0 : -1; }
   exportBox.hidden = true; $('export-close').hidden = true;
-  store.set('wiremark.tab', '');
+  store.set('wiredown.tab', '');
   if (document.activeElement === $('export-close')) (back ?? tabs[0]).focus();
 }
 $('export-close').addEventListener('click', closeExport);
@@ -290,12 +290,12 @@ function setTheme(theme) {
 }
 themeBtn.addEventListener('click', () => {
   const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
-  setTheme(next); store.set('wiremark.theme', next);
+  setTheme(next); store.set('wiredown.theme', next);
 });
 
 // ── Start ──
 async function start() {
-  const saved = store.get('wiremark.theme');
+  const saved = store.get('wiredown.theme');
   setTheme(saved === 'dark' || saved === 'light' ? saved : matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
   fillExamples();
   let text = null;
@@ -305,9 +305,9 @@ async function start() {
     if (shared.ok) text = shared.text;
     else toast(`That link could not be opened (${shared.reason})`);
   }
-  source.value = text ?? store.get('wiremark.draft') ?? EXAMPLES[0].body;
+  source.value = text ?? store.get('wiredown.draft') ?? EXAMPLES[0].body;
   render(); intro(); prepareShare();
-  const tab = tabs.find((t) => t.id === store.get('wiremark.tab'));
+  const tab = tabs.find((t) => t.id === store.get('wiredown.tab'));
   if (tab) selectTab(tab, false);
 }
 start();

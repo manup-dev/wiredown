@@ -10,7 +10,7 @@ function infoProblems(info) {
   const out = [];
   const words = String(info || '').split(/\s+/).filter(Boolean);
   words.forEach((w, i) => {
-    const known = (i === 0 && (w === 'wiremark' || w === 'screens')) || /^v\d+$/.test(w) || w.startsWith('look=') || w.startsWith('view=');
+    const known = (i === 0 && (w === 'wiredown' || w === 'screens' || w === 'wiremark')) || /^v\d+$/.test(w) || w.startsWith('look=') || w.startsWith('view=');
     if (!known) out.push({ ...wmError(0, 0, 'unknown_info', `The info word ${w.slice(0, 40)} is not known; use v1, look=wire|clean or view=prototype.`), severity: 'warning' });
   });
   return out;

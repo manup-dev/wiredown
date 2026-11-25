@@ -12,7 +12,7 @@ const walk = (dir) =>
   })
 const files = [...walk(join(root, 'src')), ...walk(join(root, 'scripts'))]
 
-test('wiremark imports only itself (node: only in scripts/)', () => {
+test('wiredown imports only itself (node: only in scripts/)', () => {
   assert.ok(files.length > 5)
   for (const f of files) {
     const text = readFileSync(f, 'utf8')
@@ -24,7 +24,7 @@ test('wiremark imports only itself (node: only in scripts/)', () => {
   }
 })
 
-test('no wiremark source file is over 300 code lines', () => {
+test('no wiredown source file is over 300 code lines', () => {
   for (const f of files) {
     let inBlock = false
     let n = 0

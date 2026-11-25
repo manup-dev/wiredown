@@ -1,4 +1,4 @@
-// wiremark kind -> @openuidev/react-ui component. Every component and argument name comes from the generated
+// wiredown kind -> @openuidev/react-ui component. Every component and argument name comes from the generated
 // table (openui-schema.js); a component the table lacks falls back to the next candidate, the last being the
 // library root (containers) or TextContent with the label. Choices as built against react-ui 0.19.0:
 //   screen                -> the library root (Stack)
@@ -28,7 +28,7 @@ const GAPS = [['none', 0], ['xs', 6], ['s', 8], ['m', 12], ['l', 18], ['xl', 24]
 // must look up nothing, never an Object.prototype member.
 const table = (o) => Object.freeze(Object.assign(Object.create(null), o));
 const own = (t, key) => (typeof key === 'string' && Object.hasOwn(t, key) ? t[key] : undefined);
-const ICONS = table({ card: 'credit-card', more: 'ellipsis' }); // wiremark icon names lucide spells differently
+const ICONS = table({ card: 'credit-card', more: 'ellipsis' }); // wiredown icon names lucide spells differently
 const BRANDS = new Set(['google']); // no lucide icon: the "brands" category draws its fallback
 const CALLOUT_TONES = table({ good: 'success', bad: 'error', warn: 'warning', info: 'info' });
 const TAG_TONES = table({ good: 'success', bad: 'danger', warn: 'warning', info: 'info' });

@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { parseMock, layoutScreen } from '../src/index.js';
 
-const login = readFileSync(new URL('./fixtures/login.wiremark', import.meta.url), 'utf8');
+const login = readFileSync(new URL('./fixtures/login.wiredown', import.meta.url), 'utf8');
 const lay = (body) => {
   const r = parseMock(body);
   assert.equal(r.ok, true, JSON.stringify(r.errors));

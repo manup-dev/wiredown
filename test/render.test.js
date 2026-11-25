@@ -3,16 +3,16 @@ import assert from 'node:assert/strict';
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import {
   parseMock, renderMockBlock, renderMockHtml, renderErrorCard, mockDigest, fnv1a64, WM_RENDER_VERSION,
-  storyboard, WIREMARK_CSS, WM_LIMITS, infoAttrs, renderScreenSvg,
+  storyboard, WIREDOWN_CSS, WM_LIMITS, infoAttrs, renderScreenSvg,
 } from '../src/index.js';
 
-const LOGIN = readFileSync(new URL('./fixtures/login.wiremark', import.meta.url), 'utf8');
+const LOGIN = readFileSync(new URL('./fixtures/login.wiredown', import.meta.url), 'utf8');
 const GOLDEN = new URL('./fixtures/login.html', import.meta.url);
 
 const screensOf = (html) => [...html.matchAll(/<div class="wm-screen[^"]*" id="([^"]+)" data-wm-screen="([^"]+)"/g)].map((m) => m[1]);
 
 test('login: a figure with three screens in storyboard order', () => {
-  const html = renderMockBlock(LOGIN, 'wiremark');
+  const html = renderMockBlock(LOGIN, 'wiredown');
   assert.ok(html.startsWith('<figure class="wm wm-look-wire" data-wm-block="0" data-wm-digest="'), html.slice(0, 120));
   assert.ok(html.endsWith('</figure>'));
   assert.deepEqual(screensOf(html), ['wm-0-login', 'wm-0-login-error', 'wm-0-reset']);
@@ -56,7 +56,7 @@ test('outline: a details text alternative listing every element', () => {
 });
 
 test('golden: login figure bytes', () => {
-  const html = renderMockBlock(LOGIN, 'wiremark');
+  const html = renderMockBlock(LOGIN, 'wiredown');
   if (process.env.UPDATE_GOLDEN === '1') writeFileSync(GOLDEN, html);
   assert.ok(existsSync(GOLDEN), 'run once with UPDATE_GOLDEN=1');
   assert.equal(html, readFileSync(GOLDEN, 'utf8'));
@@ -96,14 +96,14 @@ test('@flow orders the storyboard; variants stay beside their target', () => {
 });
 
 test('look= in the info string overrides @look; view=prototype marks the figure', () => {
-  assert.ok(renderMockBlock(LOGIN, 'wiremark look=clean').startsWith('<figure class="wm wm-look-clean"'));
+  assert.ok(renderMockBlock(LOGIN, 'wiredown look=clean').startsWith('<figure class="wm wm-look-clean"'));
   assert.ok(renderMockBlock('@look clean\ntext "a"', 'screens look=wire').startsWith('<figure class="wm wm-look-wire"'));
-  const proto = renderMockBlock(LOGIN, 'wiremark view=prototype');
+  const proto = renderMockBlock(LOGIN, 'wiredown view=prototype');
   assert.ok(proto.startsWith('<figure class="wm wm-look-wire wm-proto"'));
   assert.ok(proto.includes('<div class="wm-screen wm-start" id="wm-0-login"'));
   assert.equal(proto.split('wm-start').length - 1, 1);
   assert.ok(!renderMockBlock(LOGIN).includes('wm-start'));
-  assert.ok(renderMockBlock('text "a"', 'wiremark look=fancy').includes('wm-error'));
+  assert.ok(renderMockBlock('text "a"', 'wiredown look=fancy').includes('wm-error'));
 });
 
 test('errors: an invalid body draws the error card, never partial screens', () => {
@@ -156,27 +156,27 @@ test('digest: 64-bit FNV-1a, keyed on version and body', () => {
   assert.equal(WM_RENDER_VERSION, 1);
   assert.equal(fnv1a64('hello'), '4f9f2cabf2b853b4');
   assert.equal(mockDigest('abc'), fnv1a64('1\0abc'));
-  assert.equal(mockDigest('abc', 'wiremark'), mockDigest('abc'));
+  assert.equal(mockDigest('abc', 'wiredown'), mockDigest('abc'));
   assert.equal(mockDigest('abc', '  screens  '), mockDigest('abc'));
-  assert.notEqual(mockDigest('abc', 'wiremark view=prototype'), mockDigest('abc'));
-  assert.equal(mockDigest('abc', 'wiremark view=prototype'), mockDigest('abc', 'screens   view=prototype'));
+  assert.notEqual(mockDigest('abc', 'wiredown view=prototype'), mockDigest('abc'));
+  assert.equal(mockDigest('abc', 'wiredown view=prototype'), mockDigest('abc', 'screens   view=prototype'));
   // only look= and view= count, in a fixed order; unknown words and order never change it
-  assert.equal(mockDigest('abc', 'wiremark view=prototype look=clean'), mockDigest('abc', 'wiremark look=clean v1 foo=bar view=prototype'));
-  assert.equal(mockDigest('abc', 'wiremark v1 x=y title'), mockDigest('abc'));
-  assert.equal(mockDigest('abc', 'wiremark view=stack'), mockDigest('abc'));
+  assert.equal(mockDigest('abc', 'wiredown view=prototype look=clean'), mockDigest('abc', 'wiredown look=clean v1 foo=bar view=prototype'));
+  assert.equal(mockDigest('abc', 'wiredown v1 x=y title'), mockDigest('abc'));
+  assert.equal(mockDigest('abc', 'wiredown view=stack'), mockDigest('abc'));
   assert.equal(infoAttrs('screens view=prototype zzz look=clean'), 'look=clean view=prototype');
   assert.notEqual(mockDigest('abc', 'look=clean'), mockDigest('abc', 'look=wire'));
   assert.ok(renderMockBlock(LOGIN).includes(`data-wm-digest="${mockDigest(LOGIN)}"`));
 });
 
-test('WIREMARK_CSS: layout and prototype rules only, all scoped to .wm', () => {
-  assert.equal(typeof WIREMARK_CSS, 'string');
-  assert.ok(WIREMARK_CSS.length < 2000);
-  assert.ok(WIREMARK_CSS.includes(':target'));
-  assert.ok(WIREMARK_CSS.includes('.wm.wm-proto .wm-strip,.wm.wm-proto .wm-variants{display:block}'));
-  for (const rule of WIREMARK_CSS.split('}').map((r) => r.trim()).filter(Boolean)) {
+test('WIREDOWN_CSS: layout and prototype rules only, all scoped to .wm', () => {
+  assert.equal(typeof WIREDOWN_CSS, 'string');
+  assert.ok(WIREDOWN_CSS.length < 2000);
+  assert.ok(WIREDOWN_CSS.includes(':target'));
+  assert.ok(WIREDOWN_CSS.includes('.wm.wm-proto .wm-strip,.wm.wm-proto .wm-variants{display:block}'));
+  for (const rule of WIREDOWN_CSS.split('}').map((r) => r.trim()).filter(Boolean)) {
     const sel = rule.slice(0, rule.indexOf('{'));
     for (const part of sel.split(',')) assert.match(part.trim(), /^\.wm($|[\s.:-])/, part);
   }
-  assert.ok(!/color|background|fill|stroke|url\(|@import|border/i.test(WIREMARK_CSS));
+  assert.ok(!/color|background|fill|stroke|url\(|@import|border/i.test(WIREDOWN_CSS));
 });

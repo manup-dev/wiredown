@@ -1,16 +1,16 @@
-// rehype-wiremark: wiremark/screens code fences become the core's static SVG figure (hast).
+// rehype-wiredown: wiredown/screens code fences become the core's static SVG figure (hast).
 import { visit, SKIP } from 'unist-util-visit';
 import { fromHtml } from 'hast-util-from-html';
 import { toString } from 'hast-util-to-string';
-import { renderMockBlock, isWiremarkLang, messageCard, MSG, MAX_BLOCKS_PER_DOC } from 'wiremark';
+import { renderMockBlock, isWiredownLang, messageCard, MSG, MAX_BLOCKS_PER_DOC } from 'wiredown';
 
 const langOf = (code) => {
   const cls = code.properties?.className ?? [];
-  for (const c of cls) { const m = /^language-(.+)$/.exec(String(c)); if (m && isWiremarkLang(m[1])) return m[1]; }
+  for (const c of cls) { const m = /^language-(.+)$/.exec(String(c)); if (m && isWiredownLang(m[1])) return m[1]; }
   return null;
 };
 
-export default function rehypeWiremark(options = {}) {
+export default function rehypeWiredown(options = {}) {
   return (tree) => {
     let index = 0;
     visit(tree, 'element', (node, i, parent) => {

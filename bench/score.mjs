@@ -2,7 +2,7 @@ import { parseMock, lintMock } from '../src/index.js';
 
 export function extractFence(answer) {
   const t = String(answer ?? '');
-  const m = /```(?:wiremark|screens)[^\n]*\n([\s\S]*?)```/.exec(t);
+  const m = /```(?:wiredown|wiremark|screens)[^\n]*\n([\s\S]*?)```/.exec(t);
   if (m) return m[1];
   return parseMock(t).ok && !lintMock(t).some((p) => p.severity === 'error') ? t : null;
 }

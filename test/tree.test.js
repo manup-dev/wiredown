@@ -3,11 +3,11 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { mockTree, kindForm, PALETTE, ICON_NAMES, ICONS, KINDS, canHold, mockPatch, lintMock, parseMock } from '../src/index.js';
 
-const login = readFileSync(new URL('./fixtures/login.wiremark', import.meta.url), 'utf8');
+const login = readFileSync(new URL('./fixtures/login.wiredown', import.meta.url), 'utf8');
 const J = (...l) => l.join('\n');
 
 test('mockTree: screens, elements in source order with parent, index, depth, axis and accepts', () => {
-  const t = mockTree(login, 'wiremark');
+  const t = mockTree(login, 'wiredown');
   assert.equal(t.ok, true);
   assert.deepEqual(t.screens.map((s) => [s.id, s.label, s.line, s.variantOf, s.implicit]), [
     ['login', 'Sign in', 3, null, false], ['login-error', 'Wrong password', 13, 'login', false], ['reset', 'Reset password', 16, null, false],
@@ -25,7 +25,7 @@ test('mockTree: screens, elements in source order with parent, index, depth, axi
   assert.equal(v.find((e) => e.id === 'password').attrs.error, 'That password is not right');
   assert.deepEqual(v.map((e) => [e.editable, e.reason]).slice(0, 2), [[false, 'frame'], [false, 'variant']]);
   assert.equal(Object.isFrozen(t.screens[0].elements[1]), true);
-  assert.equal(mockTree(login, 'wiremark'), t); // memoised
+  assert.equal(mockTree(login, 'wiredown'), t); // memoised
 });
 
 test('mockTree: define elements, implicit screens, lists and grids, failures', () => {

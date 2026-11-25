@@ -3,4 +3,4 @@ export interface Options {
   /** Extra info words for every block, e.g. "look=clean". A fence's own words win. */
   info?: string;
 }
-export default function rehypeWiremark(options?: Options): (tree: Root) => void;
+export default function rehypeWiredown(options?: Options): (tree: Root) => void;

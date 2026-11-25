@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { parseMock, layoutScreen, renderMockBlock, lintMock, AI_CONTRACT } from '../src/index.js';
 
-const login = readFileSync(new URL('./fixtures/login.wiremark', import.meta.url), 'utf8');
+const login = readFileSync(new URL('./fixtures/login.wiredown', import.meta.url), 'utf8');
 const SHORT = 'screen a "A"\n  stack pad=24 gap=16\n    h1 "Hi"\n    button "Go" primary w=fill\n';
 const lay = (body) => {
   const r = parseMock(body);
@@ -57,11 +57,11 @@ test('a screen with an overlay ignores fit (overlays sit against the device heig
 });
 
 test('fit output is deterministic, and the default output is unchanged', () => {
-  const a = renderMockBlock('@device phone fit\n' + SHORT, 'wiremark', { blockIndex: 0 });
-  assert.equal(a, renderMockBlock('@device phone fit\n' + SHORT, 'wiremark', { blockIndex: 0 }));
+  const a = renderMockBlock('@device phone fit\n' + SHORT, 'wiredown', { blockIndex: 0 });
+  assert.equal(a, renderMockBlock('@device phone fit\n' + SHORT, 'wiredown', { blockIndex: 0 }));
   assert.match(a, /<rect x=".5" y=".5" width="389" height="239" rx="24"/);
   const golden = readFileSync(new URL('./fixtures/login.html', import.meta.url), 'utf8');
-  assert.equal(renderMockBlock(login, 'wiremark'), golden);
+  assert.equal(renderMockBlock(login, 'wiredown'), golden);
 });
 
 test('the AI contract and README name fit', () => {

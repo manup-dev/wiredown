@@ -98,13 +98,13 @@ export function renderErrorCard(errors: ReadonlyArray<{ line?: number; message?:
 export const MSG: Readonly<{ empty: string; failed: string; tooLarge: string; tooMany: string }>;
 /** An error card with one plain message (no line number), e.g. `messageCard(MSG.tooMany)`. */
 export function messageCard(message: string): string;
-export const WIREMARK_CSS: string;
+export const WIREDOWN_CSS: string;
 export const MAX_BLOCKS_PER_DOC: 50;
 /** info.trim().split(/\s+/)[0], case-sensitive (markdown-it's reading). */
 export function fenceLang(info: unknown): string;
-export function isWiremarkLang(lang: string): boolean;
+export function isWiredownLang(lang: string): boolean;
 /**
- * markdown-it plugin: fences whose language is `wiremark` or `screens` render through
+ * markdown-it plugin: fences whose language is `wiredown` or `screens` render through
  * `defer(env, html)` (for example a store the host fills before its sanitizer and swaps back after); blocks are numbered per render in `env.wmCount`,
  * and from the 51st on each is the cap card. Every other fence goes to the previous rule.
  * A host that joins separately rendered pages into one HTML document sets `env.wmBase`
@@ -113,7 +113,7 @@ export function isWiremarkLang(lang: string): boolean;
  * `env.wmMode === 'digest'` emits only `<figure class="wm" data-wm-digest="{mockDigest}"></figure>`
  * per block, for a host that computes from a render but never serves its HTML.
  */
-export function wiremarkPlugin(
+export function wiredownPlugin(
   md: { renderer: { rules: { fence?: (tokens: any[], idx: number, options: any, env: any, self: any) => string } } },
   opts?: { defer?: (env: any, html: string) => string },
 ): void;

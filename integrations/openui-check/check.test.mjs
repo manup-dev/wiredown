@@ -1,11 +1,11 @@
-// Every OpenUI file wiremark exports must parse with zero errors in OpenUI's own parser (@openuidev/lang-core),
+// Every OpenUI file wiredown exports must parse with zero errors in OpenUI's own parser (@openuidev/lang-core),
 // against the schema @openuidev/react-ui's library produces itself. Also checks what the parser does not:
 // child components are ones their parent's slot accepts, and every Icon name resolves in lucide.
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync, readdirSync } from 'node:fs'
 import { createParser } from '@openuidev/lang-core'
-import { toOpenUI } from 'wiremark/export'
+import { toOpenUI } from 'wiredown/export'
 import { CONTRACT_EXAMPLE } from '../../src/contract.js'
 import { loadLibrary, buildTable, tableModule, versionOf } from './table.mjs'
 
@@ -15,7 +15,7 @@ const lucide = new Set(Object.keys((await import('lucide-react/dynamicIconImport
 const fallbacks = { brands: 'box' } // react-ui src/components/_shared/icons/categoryFallbacks.ts
 
 const fixtures = new URL('../../test/fixtures/', import.meta.url)
-const bodies = readdirSync(fixtures).filter((f) => f.endsWith('.wiremark')).sort()
+const bodies = readdirSync(fixtures).filter((f) => f.endsWith('.wiredown')).sort()
   .map((f) => [f, readFileSync(new URL(f, fixtures), 'utf8')])
 bodies.push(['contract', CONTRACT_EXAMPLE])
 for (const name of ['constructor', '__proto__', 'toString', 'hasOwnProperty'])

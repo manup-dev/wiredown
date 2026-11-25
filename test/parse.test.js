@@ -3,11 +3,11 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { parseMock, WM_LIMITS } from '../src/index.js';
 
-const login = readFileSync(new URL('./fixtures/login.wiremark', import.meta.url), 'utf8');
+const login = readFileSync(new URL('./fixtures/login.wiredown', import.meta.url), 'utf8');
 const codes = (r) => (r.ok ? r.warnings : r.errors).map((e) => e.code);
 
 test('login fixture parses with three screens and a variant', () => {
-  const r = parseMock(login, 'wiremark v1');
+  const r = parseMock(login, 'wiredown v1');
   assert.equal(r.ok, true, JSON.stringify(r.errors));
   const m = r.mock;
   assert.deepEqual(m.device, { name: 'phone', w: 390, h: 844 });
@@ -25,9 +25,9 @@ test('login fixture parses with three screens and a variant', () => {
 });
 
 test('info string: version and view', () => {
-  assert.equal(parseMock('text "a"', 'wiremark v1 view=prototype').mock.view, 'prototype');
+  assert.equal(parseMock('text "a"', 'wiredown v1 view=prototype').mock.view, 'prototype');
   assert.equal(parseMock('text "a"', 'screens').mock.view, 'stack');
-  assert.deepEqual(codes(parseMock('text "a"', 'wiremark v2')), ['bad_header']);
+  assert.deepEqual(codes(parseMock('text "a"', 'wiredown v2')), ['bad_header']);
 });
 
 test('headers', () => {
@@ -104,20 +104,20 @@ test('non-strings and fuzz never throw', () => {
     let str = '';
     const n = Math.floor(rnd() * 60);
     for (let j = 0; j < n; j++) str += bits[Math.floor(rnd() * bits.length)];
-    const r = parseMock(str, rnd() < 0.3 ? 'wiremark v1' : undefined);
+    const r = parseMock(str, rnd() < 0.3 ? 'wiredown v1' : undefined);
     assert.equal(typeof r.ok, 'boolean');
   }
 });
 
 test('info string: look= overrides @look; any white space separates words', () => {
-  assert.equal(parseMock('@look clean\ntext "a"', 'wiremark look=wire').mock.look, 'wire');
+  assert.equal(parseMock('@look clean\ntext "a"', 'wiredown look=wire').mock.look, 'wire');
   assert.equal(parseMock('text "a"', 'screens\tlook=clean').mock.look, 'clean');
-  assert.equal(parseMock('text "a"', 'wiremark  view=prototype').mock.view, 'prototype');
-  assert.deepEqual(parseMock('text "a"', 'wiremark look=fancy').errors.map((e) => e.code), ['bad_header']);
+  assert.equal(parseMock('text "a"', 'wiredown  view=prototype').mock.view, 'prototype');
+  assert.deepEqual(parseMock('text "a"', 'wiredown look=fancy').errors.map((e) => e.code), ['bad_header']);
 });
 
 test('info-string errors carry line 0 (message only)', () => {
-  for (const info of ['wiremark look=fancy', 'wiremark view=grid', 'wiremark v2']) {
+  for (const info of ['wiredown look=fancy', 'wiredown view=grid', 'wiredown v2']) {
     const r = parseMock('text "a"', info);
     assert.equal(r.ok, false);
     assert.equal(r.errors[0].line, 0, info);

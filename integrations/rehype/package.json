@@ -1,11 +1,11 @@
 {
-  "name": "rehype-wiremark",
+  "name": "rehype-wiredown",
   "version": "0.1.0",
-  "description": "rehype plugin: draw wiremark (UI wireframes as markdown) fences as static SVG",
+  "description": "rehype plugin: draw wiredown (UI wireframes as markdown) fences as static SVG",
   "license": "MIT",
-  "repository": { "type": "git", "url": "git+https://github.com/manup-dev/wiremark.git", "directory": "integrations/rehype" },
-  "homepage": "https://github.com/manup-dev/wiremark/tree/main/integrations/rehype",
-  "bugs": { "url": "https://github.com/manup-dev/wiremark/issues" },
+  "repository": { "type": "git", "url": "git+https://github.com/manup-dev/wiredown.git", "directory": "integrations/rehype" },
+  "homepage": "https://github.com/manup-dev/wiredown/tree/main/integrations/rehype",
+  "bugs": { "url": "https://github.com/manup-dev/wiredown/issues" },
   "type": "module",
   "engines": {
     "node": ">=20"
@@ -28,13 +28,13 @@
     "unified",
     "markdown",
     "wireframe",
-    "wiremark",
+    "wiredown",
     "mdx",
     "astro",
     "docusaurus"
   ],
   "peerDependencies": {
-    "wiremark": "^0.1.0"
+    "wiredown": "^0.1.0"
   },
   "dependencies": {
     "@types/hast": "^3.0.5",
@@ -48,7 +48,7 @@
     "remark-parse": "^11.0.0",
     "remark-rehype": "^11.1.1",
     "unified": "^11.0.5",
-    "wiremark": "file:../.."
+    "wiredown": "file:../.."
   },
   "scripts": {
     "test": "node --test test/*.test.mjs"

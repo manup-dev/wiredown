@@ -3,9 +3,9 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { lintMock } from '../src/index.js';
 
-const login = readFileSync(new URL('./fixtures/login.wiremark', import.meta.url), 'utf8');
+const login = readFileSync(new URL('./fixtures/login.wiredown', import.meta.url), 'utf8');
 
-test('login lints clean', () => assert.deepEqual(lintMock(login, 'wiremark v1'), []));
+test('login lints clean', () => assert.deepEqual(lintMock(login, 'wiredown v1'), []));
 test('unknown attribute is an error', () => {
   const r = lintMock('button "x" colour=red');
   assert.equal(r.length, 1);
@@ -22,7 +22,7 @@ test('parse errors carry severity error; placement stays a warning', () => {
   assert.equal(w[0].severity, 'warning');
 });
 test('unknown info word is a warning at line 0', () => {
-  const r = lintMock('button "x"', 'wiremark lookk=clean');
+  const r = lintMock('button "x"', 'wiredown lookk=clean');
   assert.equal(r.length, 1);
   assert.deepEqual([r[0].code, r[0].severity, r[0].line], ['unknown_info', 'warning', 0]);
   assert.deepEqual(lintMock('button "x"', 'screens v1 look=clean view=prototype'), []);

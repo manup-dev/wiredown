@@ -66,7 +66,7 @@ test('perf: the large bodies are near the limit and edit cleanly', () => {
 for (const [name, body] of Object.entries({ flat, screens, deep, quotes, arrows })) {
   test(`perf: mockTree and refused edits on ${name} in under 100 ms`, () => {
     const ms = median(() => {
-      mockTree(`${body} `, 'wiremark');
+      mockTree(`${body} `, 'wiredown');
       mockPatch(body, [{ move: 'x', after: 'y' }]);
       mockPatch(body, { addScreen: { label: 'x' } });
       kindForm('button');

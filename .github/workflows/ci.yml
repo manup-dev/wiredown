@@ -30,7 +30,7 @@ jobs:
       - name: Browser script
         working-directory: integrations/browser-test
         run: npm ci && npm test
-      - name: rehype-wiremark
+      - name: rehype-wiredown
         working-directory: integrations/rehype
         run: npm ci && npm test
       - name: VS Code extension

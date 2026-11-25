@@ -8,7 +8,7 @@ import oniguruma from 'vscode-oniguruma'
 
 const require = createRequire(import.meta.url)
 const wasm = readFileSync(require.resolve('vscode-oniguruma/release/onig.wasm'))
-const grammarPath = fileURLToPath(new URL('../syntaxes/wiremark.tmLanguage.json', import.meta.url))
+const grammarPath = fileURLToPath(new URL('../syntaxes/wiredown.tmLanguage.json', import.meta.url))
 
 const onigLib = oniguruma.loadWASM(wasm.buffer.slice(wasm.byteOffset, wasm.byteOffset + wasm.byteLength)).then(() => ({
   createOnigScanner: (p) => new oniguruma.OnigScanner(p),
@@ -20,7 +20,7 @@ const registry = new vsctm.Registry({
 })
 
 test('tokens carry the expected scopes', async () => {
-  const grammar = await registry.loadGrammar('source.wiremark')
+  const grammar = await registry.loadGrammar('source.wiredown')
   const line = '  button "Sign in" primary w=fill #submit -> home // x'
   const { tokens } = grammar.tokenizeLine(line, vsctm.INITIAL)
   const scopesOf = (text) => {
@@ -28,10 +28,10 @@ test('tokens carry the expected scopes', async () => {
     const t = tokens.find((k) => k.startIndex <= at && at < k.endIndex)
     return t ? t.scopes : []
   }
-  assert.ok(scopesOf('button').includes('entity.name.tag.wiremark'))
-  assert.ok(scopesOf('"Sign in"').includes('string.quoted.double.wiremark'))
-  assert.ok(scopesOf('w=').includes('entity.other.attribute-name.wiremark'))
-  assert.ok(scopesOf('#submit').includes('variable.other.id.wiremark'))
-  assert.ok(scopesOf('->').includes('keyword.operator.link.wiremark'))
-  assert.ok(scopesOf('// x').includes('comment.line.double-slash.wiremark'))
+  assert.ok(scopesOf('button').includes('entity.name.tag.wiredown'))
+  assert.ok(scopesOf('"Sign in"').includes('string.quoted.double.wiredown'))
+  assert.ok(scopesOf('w=').includes('entity.other.attribute-name.wiredown'))
+  assert.ok(scopesOf('#submit').includes('variable.other.id.wiredown'))
+  assert.ok(scopesOf('->').includes('keyword.operator.link.wiredown'))
+  assert.ok(scopesOf('// x').includes('comment.line.double-slash.wiredown'))
 })

@@ -1,5 +1,5 @@
 // Vendored stroke icons on a 24-unit grid, stored as path data only (circles and rects converted).
-// Drawn with stroke-width 2, round caps and joins, no fill, like Lucide. `google` is wiremark's own
+// Drawn with stroke-width 2, round caps and joins, no fill, like Lucide. `google` is wiredown's own
 // stroke "G" (Lucide ships no brand mark for it); every other icon is from Lucide.
 //
 // Lucide licence (https://lucide.dev):

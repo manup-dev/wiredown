@@ -1,4 +1,4 @@
-// Captures @openuidev/react-ui's component argument order into the wiremark core as a plain table.
+// Captures @openuidev/react-ui's component argument order into the wiredown core as a plain table.
 // Run after any version bump of the pinned OpenUI packages: `npm run gen`. It imports the library from
 // `@openuidev/react-ui/genui-lib` in plain Node (no DOM needed) and reads `openuiLibrary.toJSONSchema()`.
 // `.npmrc` sets ignore-scripts: @openuidev/lang-core's postinstall would otherwise send install telemetry

@@ -34,6 +34,6 @@ export function readHeader(raw, mock, flowAt, ctx) {
     else { mock.flow = ids; flowAt.line = raw.line; flowAt.col = at.col; }
   } else if (at.v === 'requires') {
     const major = one && one.t === 'word' ? digits(one.v.split('.')[0]) : NaN;
-    if (!(major >= 1 && major <= 1)) fail('This block needs a newer wiremark (@requires 1).');
+    if (!(major >= 1 && major <= 1)) fail('This block needs a newer wiredown (@requires 1).');
   } else fail(`Unknown header @${at.v}.`);
 }

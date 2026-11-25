@@ -1,6 +1,6 @@
-# The wiremark language
+# The wiredown language
 
-The full reference: the language, lint and patch, and what an editor built on wiremark needs. The [README](../README.md) has the short version.
+The full reference: the language, lint and patch, and what an editor built on wiredown needs. The [README](../README.md) has the short version.
 
 ## The language
 
@@ -24,7 +24,7 @@ One block is one flow. Headers first, then `define`, `screen` and `variant` bloc
 | Flags | `primary disabled loading selected checked on muted back` (per kind, see `KINDS`) |
 | Kind attributes | `placeholder type options error tone icon rows cols` |
 | Devices | `phone 390x844`, `tablet 820x1180`, `laptop 1280x800`, `desktop 1440x900`, or `WxH` (100 to 4000 each). Add `fit` (`@device phone fit`) to end each screen at its content (at least 240 px; a taller screen keeps the fold line at the device height). A screen with a `modal`, `sheet` or `toast` ignores `fit`, because overlays are placed against the device height |
-| Info string | `wiremark v1 look=clean view=prototype` (`screens` is an alias for `wiremark`) |
+| Info string | `wiredown v1 look=clean view=prototype` (`screens` is an alias for `wiredown`) |
 
 Layout is a deterministic flex model with a fixed text model (widths by character class, no fonts). Labels wrap at spaces; a row too narrow for its children's natural widths shrinks them toward their min-content width first (the widest word of each label plus its padding and icon), so no label breaks inside a word while the row has room for every word. Only a word wider than the room left for it breaks, per character.
 

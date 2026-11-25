@@ -1,4 +1,4 @@
-// AI_CONTRACT: what an agent needs to write a wiremark block. Generated from KINDS at import; deterministic.
+// AI_CONTRACT: what an agent needs to write a wiredown block. Generated from KINDS at import; deterministic.
 import { KINDS } from './kinds.js';
 import { WM_LIMITS } from './limits.js';
 
@@ -46,7 +46,7 @@ function groups() {
 }
 
 const L = WM_LIMITS;
-export const AI_CONTRACT = `wiremark: UI screens and flows as markdown. Write one fenced block with the language \`wiremark\` (\`screens\` also works). One block is one flow. It is drawn as static wireframes, so describe structure, not pixels.
+export const AI_CONTRACT = `wiredown: UI screens and flows as markdown. Write one fenced block with the language \`wiredown\` (\`screens\` also works). One block is one flow. It is drawn as static wireframes, so describe structure, not pixels.
 
 GRAMMAR
 Headers first (optional): @device phone|tablet|laptop|desktop|WxH (each side 100..${L.deviceMax}), add fit after it (@device phone fit) to end each screen at its content instead of the full device height (not with a modal, sheet or toast), @look wire|clean, @title "Text", @flow a b c (screen ids in order), @requires.
@@ -65,7 +65,7 @@ ${groups()}
 Other attribute values: type is text|password|email|number|search|tel|url; tone is good|bad|warn|info; options="a, b" for a select; cols="A, B" for a table, or a number 1-12 for a grid; icon=name; placeholder="text"; error="text"; rows=number. Colours are never set by you; the look decides.
 
 EXAMPLE
-\`\`\`wiremark
+\`\`\`wiredown
 ${CONTRACT_EXAMPLE}
 \`\`\`
 

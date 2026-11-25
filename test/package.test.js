@@ -11,12 +11,12 @@ test('package is publishable and its paths exist', () => {
   // No sideEffects field: browser/auto.js renders on import, and the field changes how a host's bundler splits chunks.
   assert.equal(pkg.sideEffects, undefined)
   assert.equal(pkg.engines.node, '>=20')
-  assert.deepEqual(Object.keys(pkg.exports), ['.', './export', './fences', './browser', './wiremark.css', './package.json'])
+  assert.deepEqual(Object.keys(pkg.exports), ['.', './export', './fences', './browser', './wiredown.css', './package.json'])
   for (const v of Object.values(pkg.exports)) {
     for (const p of typeof v === 'string' ? [v] : Object.values(v)) assert.ok(existsSync(at(p)), p)
   }
-  assert.ok(existsSync(at(pkg.bin.wiremark)))
-  assert.deepEqual(pkg.files, ['src', 'bin', 'browser', 'wiremark.css', 'LICENSE', 'README.md'])
+  assert.ok(existsSync(at(pkg.bin.wiredown)))
+  assert.deepEqual(pkg.files, ['src', 'bin', 'browser', 'wiredown.css', 'LICENSE', 'README.md'])
 })
 
 test('index.js re-exports nothing from the new subpaths', () => {

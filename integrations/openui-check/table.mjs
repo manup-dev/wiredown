@@ -1,4 +1,4 @@
-// Turns @openuidev/react-ui's own `openuiLibrary.toJSONSchema()` into the plain table the wiremark core reads.
+// Turns @openuidev/react-ui's own `openuiLibrary.toJSONSchema()` into the plain table the wiredown core reads.
 // Shared by gen-schema.mjs (writes the table) and check.test.mjs (fails when the committed table is stale).
 import { readFileSync } from 'node:fs'
 

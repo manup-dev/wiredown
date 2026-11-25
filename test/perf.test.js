@@ -18,7 +18,7 @@ cases['wide labels'] = Array.from({ length: 300 }, () => 'button "' + 'a'.repeat
 for (const [name, body] of Object.entries(cases)) {
   test(`perf: ${name} parses and renders in under 100 ms`, () => {
     let out = '';
-    const ms = median(() => { out = renderMockBlock(body, 'wiremark'); });
+    const ms = median(() => { out = renderMockBlock(body, 'wiredown'); });
     assert.equal(typeof out, 'string');
     assert.ok(ms < 100, `${ms.toFixed(1)} ms`);
   });

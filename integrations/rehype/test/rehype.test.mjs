@@ -5,17 +5,17 @@ import remarkParse from 'remark-parse'
 import remarkRehype from 'remark-rehype'
 import rehypeStringify from 'rehype-stringify'
 import { compile } from '@mdx-js/mdx'
-import rehypeWiremark from '../index.js'
+import rehypeWiredown from '../index.js'
 
-const md = '# Spec\n\n```wiremark look=clean\nscreen a "A"\n  button "Go" primary\n```\n\n```js\nx\n```\n'
-const toHtml = (s) => unified().use(remarkParse).use(remarkRehype).use(rehypeWiremark).use(rehypeStringify).process(s).then(String)
+const md = '# Spec\n\n```wiredown look=clean\nscreen a "A"\n  button "Go" primary\n```\n\n```js\nx\n```\n'
+const toHtml = (s) => unified().use(remarkParse).use(remarkRehype).use(rehypeWiredown).use(rehypeStringify).process(s).then(String)
 
-test('draws wiremark fences, leaves other code alone', async () => {
+test('draws wiredown fences, leaves other code alone', async () => {
   const html = await toHtml(md)
   assert.match(html, /<figure class="wm[^"]*"/)
   assert.match(html, /<svg /)
   assert.match(html, /<code class="language-js">/)
-  assert.ok(!html.includes('language-wiremark'))
+  assert.ok(!html.includes('language-wiredown'))
 })
 
 test('the info string reaches the renderer (look=clean)', async () => {
@@ -24,11 +24,11 @@ test('the info string reaches the renderer (look=clean)', async () => {
 })
 
 test('compiles inside MDX', async () => {
-  const out = await compile(md, { rehypePlugins: [rehypeWiremark] })
+  const out = await compile(md, { rehypePlugins: [rehypeWiredown] })
   assert.match(String(out), /svg/)
 })
 
-const fence = (look = '') => '```wiremark ' + look + '\nscreen a "A"\n  button "Go"\n```\n'
+const fence = (look = '') => '```wiredown ' + look + '\nscreen a "A"\n  button "Go"\n```\n'
 
 test('several fences, in a list and in a quote: each a figure, ids unique and ordered', async () => {
   const src = fence() + '\n' + fence() + '\n- item\n\n  ' + fence().split('\n').join('\n  ') + '\n> ' + fence().trimEnd().split('\n').join('\n> ') + '\n'
@@ -42,7 +42,7 @@ test('several fences, in a list and in a quote: each a figure, ids unique and or
 })
 
 test('options.info is a default; the fence wins', async () => {
-  const run = (s, o) => unified().use(remarkParse).use(remarkRehype).use(rehypeWiremark, o).use(rehypeStringify).process(s).then(String)
+  const run = (s, o) => unified().use(remarkParse).use(remarkRehype).use(rehypeWiredown, o).use(rehypeStringify).process(s).then(String)
   assert.match(await run(fence(), { info: 'look=clean' }), /wm-look-clean/)
   assert.match(await run(fence('look=wire'), { info: 'look=clean' }), /wm-look-wire/)
 })

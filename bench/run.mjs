@@ -51,14 +51,14 @@ function estimate(a) {
 
 function repairText(p, body, score) {
   let lines;
-  if (body == null) lines = ['no wiremark block found'];
+  if (body == null) lines = ['no wiredown block found'];
   else {
     lines = lintMock(body).filter((x) => x.severity === 'error').map((x) => `line ${x.line}: ${x.code} ${x.message}`);
     if (!score.checks.minScreens) lines.push(`needs at least ${p.minScreens} screens (not counting variants)`);
     if (score.missingKinds?.length) lines.push(`missing kinds: ${score.missingKinds.join(', ')}`);
     for (const [x, y] of score.missingLinks ?? []) lines.push(`missing link from '${x}' to '${y}'`);
   }
-  return `wiremark lint found:\n${lines.join('\n')}\nReturn the corrected block in one ${FENCE}wiremark fence.`;
+  return `wiredown lint found:\n${lines.join('\n')}\nReturn the corrected block in one ${FENCE}wiredown fence.`;
 }
 
 function fakeProvider() {
@@ -108,7 +108,7 @@ async function main() {
     const [provider, ...rest] = spec.split(':');
     const model = rest.join(':');
     for (const p of prompts) {
-      const user = { role: 'user', content: `${p.request}\n\nAnswer with one ${FENCE}wiremark fence.` };
+      const user = { role: 'user', content: `${p.request}\n\nAnswer with one ${FENCE}wiredown fence.` };
       const row = { prompt: p.id, model: spec, first: null, repaired: null, outTokens: 0, screens: 0, ms: 0 };
       try {
         const r1 = await call(provider, model, [user]);

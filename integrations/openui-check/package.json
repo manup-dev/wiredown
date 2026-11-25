@@ -1,13 +1,13 @@
 {
-  "name": "wiremark-openui-check",
+  "name": "wiredown-openui-check",
   "private": true,
-  "description": "Checks wiremark's OpenUI Lang export against OpenUI's own parser and @openuidev/react-ui's schema.",
+  "description": "Checks wiredown's OpenUI Lang export against OpenUI's own parser and @openuidev/react-ui's schema.",
   "license": "MIT",
   "type": "module",
   "engines": { "node": ">=18" },
   "scripts": { "gen": "node gen-schema.mjs", "test": "node --test check.test.mjs" },
   "devDependencies": {
-    "wiremark": "file:../..",
+    "wiredown": "file:../..",
     "@openuidev/lang-core": "1.2.0",
     "@openuidev/react-lang": "1.2.0",
     "@openuidev/react-ui": "0.19.0",

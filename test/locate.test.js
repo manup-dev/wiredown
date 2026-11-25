@@ -41,8 +41,8 @@ test('elementAtLine: one element per line, null for others', () => {
 });
 
 test('bodyLineSpan: trimmed, through a container prefix', () => {
-  const text = '- item\n\n  ```wiremark\n  button "Go"  \n  ```\n';
-  const s = bodyLineSpan(text, text.indexOf('  ```wiremark'), 'button "Go"  \n', 1);
+  const text = '- item\n\n  ```wiredown\n  button "Go"  \n  ```\n';
+  const s = bodyLineSpan(text, text.indexOf('  ```wiredown'), 'button "Go"  \n', 1);
   assert.equal(text.slice(s.from, s.to), 'button "Go"');
   assert.equal(s.at, text.indexOf('button'));
   assert.equal(bodyLineSpan(text, 0, 'other', 1), null);

@@ -6,18 +6,18 @@ const DEFAULTS = { look: 'wire' };
 // Block numbers only need to be distinct within one document; wrap well before the core's cap.
 let index = 0;
 
-export default class WiremarkPlugin extends Plugin {
+export default class WiredownPlugin extends Plugin {
   async onload() {
     this.settings = { ...DEFAULTS, ...(await this.loadData()) };
-    for (const lang of ['wiremark', 'screens']) {
+    for (const lang of ['wiredown', 'wiremark', 'screens']) {
       this.registerMarkdownCodeBlockProcessor(lang, (source, el) =>
         drawInto(el, source, lang, this.settings.look, index++ % 10000));
     }
-    this.addSettingTab(new WiremarkSettings(this.app, this));
+    this.addSettingTab(new WiredownSettings(this.app, this));
   }
 }
 
-class WiremarkSettings extends PluginSettingTab {
+class WiredownSettings extends PluginSettingTab {
   constructor(app, plugin) {
     super(app, plugin);
     this.plugin = plugin;

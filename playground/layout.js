@@ -13,7 +13,7 @@ export function initLayout({ $, store, preview, onChange, goTo }) {
     main.toggleAttribute('data-source-hidden', !shown);
     $('show-source').hidden = shown;
     $('hide-source').setAttribute('aria-expanded', String(shown));
-    store.set('wiremark.source', shown ? 'shown' : 'hidden');
+    store.set('wiredown.source', shown ? 'shown' : 'hidden');
     if (focus) (shown ? $('source') : $('show-source')).focus();
     requestAnimationFrame(onChange);
   }
@@ -26,7 +26,7 @@ export function initLayout({ $, store, preview, onChange, goTo }) {
     const v = Math.min(SPLIT.max, Math.max(SPLIT.min, pct));
     main.style.setProperty('--src-w', v + '%');
     split.setAttribute('aria-valuenow', String(Math.round(v)));
-    if (save) store.set('wiremark.split', String(v));
+    if (save) store.set('wiredown.split', String(v));
     onChange();
     return v;
   }
@@ -72,7 +72,7 @@ export function initLayout({ $, store, preview, onChange, goTo }) {
     $('zoom-level').title = z === null ? 'Automatic size' : 'Back to the automatic size';
     $('zoom-out').disabled = shown <= ZOOMS[0];
     $('zoom-in').disabled = shown >= ZOOMS[ZOOMS.length - 1];
-    if (save) store.set('wiremark.zoom', z === null ? '' : String(z));
+    if (save) store.set('wiredown.zoom', z === null ? '' : String(z));
     requestAnimationFrame(() => { if (keep) keepPlace(keep); onChange(); });
   }
   const step = (dir) => {
@@ -191,9 +191,9 @@ export function initLayout({ $, store, preview, onChange, goTo }) {
   }
 
   // ── Start: what this browser chose last time ──
-  setSource(store.get('wiremark.source') !== 'hidden', false);
-  setSplit(Number(store.get('wiremark.split')) || SPLIT.auto, false);
-  const z = Number(store.get('wiremark.zoom'));
+  setSource(store.get('wiredown.source') !== 'hidden', false);
+  setSplit(Number(store.get('wiredown.split')) || SPLIT.auto, false);
+  const z = Number(store.get('wiredown.zoom'));
   setZoom(ZOOMS.includes(z) ? z : null, false);
   return { decorate, reveal };
 }

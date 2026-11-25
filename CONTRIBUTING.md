@@ -32,7 +32,7 @@ Checked by tests:
 
 - **Imports.** `test/purity.test.js` reads every import in `src/` and `scripts/`: `src/` may import only `./` or `../` paths, `scripts/` also `node:` modules.
 - **300 code lines at most per file in `src/` and `scripts/`** (blank lines and comments do not count), also `test/purity.test.js`. When a file gets close, split it by responsibility.
-- **`src/index.js` is the public API.** `test/package.test.js` checks that the index re-exports nothing from the subpaths (`wiremark/export`, `wiremark/fences`) and that every `exports` path exists.
+- **`src/index.js` is the public API.** `test/package.test.js` checks that the index re-exports nothing from the subpaths (`wiredown/export`, `wiredown/fences`) and that every `exports` path exists.
 - **Safety.** The output rules in the README's "Safety guarantees" are checked by `test/security.test.js` (hostile input, seeded fuzz, the element allowlist). A change that loosens one needs a very good reason.
 
 Kept in review (no test checks them):
@@ -43,7 +43,7 @@ Kept in review (no test checks them):
 
 ## Golden fixtures
 
-Some tests compare output byte for byte with a file in `test/fixtures/`. When a change is meant to change the drawing, change the fixture in the same commit as the code and say why in the commit message. `test/render.test.js` can rewrite its golden file: `UPDATE_GOLDEN=1 npm test`, then check the diff by eye. `docs/example.svg` (the README picture) is pinned by `test/readme.test.js`: regenerate it with `node bin/wiremark.js render` on the contract example.
+Some tests compare output byte for byte with a file in `test/fixtures/`. When a change is meant to change the drawing, change the fixture in the same commit as the code and say why in the commit message. `test/render.test.js` can rewrite its golden file: `UPDATE_GOLDEN=1 npm test`, then check the diff by eye. `docs/example.svg` (the README picture) is pinned by `test/readme.test.js`: regenerate it with `node bin/wiredown.js render` on the contract example.
 
 ## Style
 
