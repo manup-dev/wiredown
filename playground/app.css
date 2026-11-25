@@ -51,6 +51,7 @@ a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: 3px; 
 a:hover { text-decoration-color: currentColor; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
 h1, h2 { margin: 0; }
+[hidden] { display: none !important; }
 
 /* ── Header ── */
 .bar {
@@ -185,8 +186,79 @@ main.split { flex: 1; display: grid; grid-template-columns: minmax(0, 1fr); min-
 @keyframes rise { from { opacity: 0; transform: translateY(8px); } }
 @keyframes flash { from { box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 55%, transparent); } to { box-shadow: 0 0 0 12px transparent; } }
 
+/* Zoom: the automatic size unless a zoom was picked; past it, wide screens may scroll sideways. */
+#preview .wm-screen svg { zoom: var(--wm-zoom, var(--wm-zoom-auto, 1)); }
+#preview[data-zoomed] .wm-screen svg { max-width: none !important; }
+
+/* ── Drawing ↔ text: hover and selection boxes over the drawing ── */
+#preview { position: relative; }
+#preview:focus-visible { outline-offset: -3px; }
+#preview svg [data-wm-el] { cursor: pointer; }
+.wm-box { position: absolute; z-index: 2; pointer-events: none; border-radius: 6px; }
+.wm-hover { outline: 1.5px dashed color-mix(in srgb, var(--accent) 75%, transparent); }
+.wm-hover[data-label]:not([data-label=""])::after {
+  content: attr(data-label); position: absolute; left: -1px; bottom: calc(100% + 4px); max-width: 320px; overflow: hidden; text-overflow: ellipsis;
+  padding: 2px 6px; border-radius: 4px; background: var(--fg); color: var(--bg); font: 500 11px/1.4 var(--mono); white-space: nowrap;
+}
+.wm-sel { outline: 2px solid var(--accent); background: color-mix(in srgb, var(--accent) 8%, transparent); animation: pop .18s ease-out; }
+.wm-chip {
+  position: absolute; z-index: 3; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; max-width: min(420px, 80%);
+  padding: 4px 4px 4px 10px; border: 1px solid var(--line-strong); border-radius: 9px; background: var(--surface); box-shadow: var(--shadow); font-size: 12.5px;
+}
+.wm-chip .what { font: 600 12px/1.3 var(--mono); }
+.wm-chip .note { color: var(--muted); flex-basis: 100%; order: 9; padding: 0 0 4px; }
+.wm-chip button { height: 24px; padding: 0 8px; font-size: 12px; border-radius: 6px; }
+.wm-chip button.go { background: var(--accent); border-color: var(--accent); color: var(--accent-fg); }
+#preview .wm-notes li[data-wm-el] { cursor: pointer; border-radius: 4px; }
+#preview .wm-notes li[data-wm-el]:hover { color: var(--fg); background: var(--hover); }
+@keyframes pop { from { outline-offset: 4px; opacity: .3; } }
+
+/* ── Folding: each screen caption is a toggle ── */
+#preview .wm-cap[role=button] { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; user-select: none; border-radius: 4px; padding-inline-end: 4px; }
+#preview .wm-cap[role=button]::before {
+  content: ""; width: 0; height: 0; border-inline-start: 5px solid currentColor; border-block: 4px solid transparent;
+  transform: rotate(90deg); transition: transform .15s; opacity: .7;
+}
+#preview .wm-cap[role=button]:hover { color: var(--fg); }
+#preview .wm-screen.is-folded > .wm-cap::before { transform: none; }
+#preview .wm-screen.is-folded > svg { display: none; }
+#preview .wm-screen.is-folded > .wm-cap { padding: 6px 10px 6px 8px; border: 1px dashed var(--line-strong); background: var(--surface); }
+
+/* ── The bar above the drawing: screen chips, fold all, zoom ── */
+.viewbar { display: flex; align-items: center; gap: 8px 10px; padding: 8px 20px; border-top: 1px solid var(--line); min-width: 0; }
+.viewbar-gap { flex: 1; }
+#screens-nav { display: flex; gap: 6px; min-width: 0; overflow-x: auto; scrollbar-width: none; padding: 2px; }
+#screens-nav::-webkit-scrollbar { display: none; }
+#screens-nav[data-more-end] { mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent); }
+#screens-nav[data-more-start] { mask-image: linear-gradient(to left, #000 calc(100% - 36px), transparent); }
+#screens-nav[data-more-start][data-more-end] { mask-image: linear-gradient(to right, transparent, #000 36px, #000 calc(100% - 36px), transparent); }
+#screens-nav button { flex: none; height: 26px; padding: 0 11px; border-radius: 999px; font-size: 12.5px; color: var(--muted); background: transparent; }
+#screens-nav button:hover { color: var(--fg); }
+#screens-nav button[aria-current=true] { color: var(--fg); border-color: var(--accent); background: color-mix(in srgb, var(--accent) 9%, var(--surface)); }
+.viewbar #fold-all { height: 28px; flex: none; }
+.zoom { display: inline-flex; flex: none; border: 1px solid var(--line-strong); border-radius: 7px; overflow: hidden; background: var(--surface); }
+.zoom button { height: 28px; border: 0; border-radius: 0; padding: 0 10px; background: transparent; }
+.zoom button:hover { background: var(--hover); }
+#zoom-level { min-width: 56px; font-variant-numeric: tabular-nums; border-inline: 1px solid var(--line); }
+#zoom-in, #zoom-out { font-size: 16px; }
+
+/* ── Hiding the source ── */
+#splitter { display: none; }
+main.split[data-source-hidden] .pane-source, main.split[data-source-hidden] #splitter { display: none; }
+.fold-btn { display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 8px; font-size: 12.5px; }
+.fold-btn::before { content: ""; width: 6px; height: 6px; border-inline-start: 1.5px solid currentColor; border-block-end: 1.5px solid currentColor; transform: rotate(45deg); }
+#export-close::before { transform: rotate(-45deg); margin-top: -3px; }
+.show-source { display: inline-flex; align-items: center; gap: 7px; }
+.show-source::before { content: ""; width: 6px; height: 6px; border-inline-end: 1.5px solid currentColor; border-block-start: 1.5px solid currentColor; transform: rotate(45deg); }
+.pane-head .hint { margin-inline-end: 0; }
+
+/* ── Problems: a long list folds to its first two ── */
+#problems.folded li:nth-child(n+3) { display: none; }
+#problems-more { align-self: flex-start; margin: -6px 12px 8px 30px; height: 26px; padding: 0 8px; font-size: 12.5px; color: var(--accent); }
+
 /* ── Export ── */
 .export-head h2 { margin-inline-end: auto; }
+.export-head #export-close { margin-inline-start: -4px; }
 [role=tablist] { display: inline-flex; padding: 2px; gap: 2px; border: 1px solid var(--line-strong); border-radius: 8px; background: var(--code-bg); }
 [role=tab] { height: 26px; padding: 0 12px; border: 0; border-radius: 6px; background: transparent; color: var(--muted); }
 [role=tab]:hover { color: var(--fg); }
@@ -212,13 +284,20 @@ footer { padding: 12px 20px; font-size: 12.5px; color: var(--muted); border-top:
 /* ── Wide screens: the page is an app, each pane scrolls inside itself ── */
 @media (min-width: 900px) {
   body { height: 100vh; height: 100dvh; min-height: 0; overflow: hidden; }
-  main.split { grid-template-columns: minmax(340px, 2fr) minmax(0, 3fr); }
+  main.split { grid-template-columns: var(--src-w, 40%) 7px minmax(0, 1fr); }
+  main.split[data-source-hidden] { grid-template-columns: minmax(0, 1fr); }
   .pane { min-height: 0; }
-  .pane-source { border-bottom: 0; border-inline-end: 1px solid var(--line); }
+  .pane-source { border-bottom: 0; }
+  #splitter { display: block; position: relative; cursor: col-resize; touch-action: none; }
+  #splitter::after { content: ""; position: absolute; inset: 0 3px; background: var(--line); transition: background-color .12s, inset .12s; }
+  #splitter:hover::after, #splitter:focus-visible::after, main.dragging #splitter::after { background: var(--accent); inset: 0 2px; }
+  #splitter:focus-visible { outline: none; }
+  main.dragging { cursor: col-resize; user-select: none; }
+  main.dragging #preview, main.dragging #source { pointer-events: none; }
   .editor { flex: 1; height: auto; min-height: 0; }
   #preview { min-height: 0; padding: 32px 32px 40px; }
   /* A touch smaller on wide screens, so two phone screens of a flow sit side by side. */
-  #preview .wm-screen svg { zoom: .85; }
+  #preview { --wm-zoom-auto: .85; }
   #export-output { max-height: 32vh; }
 }
 
@@ -234,6 +313,8 @@ footer { padding: 12px 20px; font-size: 12.5px; color: var(--muted); border-top:
   #copyexport { right: 16px; }
   .toolbar-gap { display: none; }
   .toolbar button { padding: 0 10px; }
+  .viewbar { padding-inline: 16px; flex-wrap: wrap; }
+  #screens-nav { flex-basis: 100%; order: -1; }
 }
 
 @media (prefers-reduced-motion: reduce) {

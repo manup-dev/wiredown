@@ -6,6 +6,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="color-scheme" content="light dark">
 <title>wiremark playground</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='7' y='3' width='18' height='26' rx='4' fill='%23fff' stroke='%231b1d21' stroke-width='3'/%3E%3Crect x='11' y='9' width='8' height='3' fill='%231b1d21'/%3E%3Crect x='11' y='16' width='8' height='4' rx='1' fill='%233b5bdb'/%3E%3C/svg%3E">
 <meta name="description" content="Write UI wireframes as text and see them drawn. Share a link, copy the SVG, or hand the screens to OpenUI.">
 <link rel="stylesheet" href="../wiremark.css">
 <link rel="stylesheet" href="app.css">
@@ -22,17 +23,21 @@
   </div>
 </header>
 <main class="split">
-  <section class="pane pane-source" aria-labelledby="source-title">
+  <section class="pane pane-source" id="source-pane" aria-labelledby="source-title">
     <div class="pane-head">
       <h2 id="source-title">Source</h2>
       <p id="keys-hint" class="hint">Tab indents. Esc, then Tab, leaves the editor.</p>
+      <button id="hide-source" type="button" class="quiet fold-btn" aria-controls="source-pane" aria-expanded="true" title="Hide the source so the drawing fills the page">Hide</button>
     </div>
     <div class="editor"><pre id="gutter" aria-hidden="true"></pre><textarea id="source" aria-label="wiremark source" aria-describedby="keys-hint" spellcheck="false" autocapitalize="off" autocomplete="off"></textarea></div>
     <ul id="problems" role="list" aria-label="Problems" aria-live="polite"></ul>
+    <button id="problems-more" type="button" class="quiet" aria-controls="problems" aria-expanded="false" hidden></button>
   </section>
+  <div id="splitter" role="separator" tabindex="0" aria-orientation="vertical" aria-controls="source-pane" aria-label="Resize the source and the drawing" aria-valuemin="22" aria-valuemax="70" aria-valuenow="40" title="Drag to resize. Double-click resets."></div>
   <section class="pane pane-drawing" aria-labelledby="drawing-title">
     <div class="toolbar">
       <h2 id="drawing-title">Drawing</h2>
+      <button id="show-source" type="button" class="show-source" aria-controls="source-pane" aria-expanded="false" hidden>Show source</button>
       <label class="field">Look <select id="look"><option value="">From the block</option><option value="wire">Wire</option><option value="clean">Clean</option></select></label>
       <label class="field">View <select id="view"><option value="">Stack</option><option value="prototype">Prototype</option></select></label>
       <span class="toolbar-gap"></span>
@@ -40,13 +45,24 @@
       <button id="copysvg" type="button">Copy SVG</button>
       <button id="html" type="button">Download HTML</button>
     </div>
-    <div id="preview"></div>
+    <div class="viewbar">
+      <nav id="screens-nav" aria-label="Jump to a screen" hidden></nav>
+      <span class="viewbar-gap"></span>
+      <button id="fold-all" type="button" class="quiet" hidden>Fold all</button>
+      <div class="zoom" role="group" aria-label="Zoom">
+        <button id="zoom-out" type="button" aria-label="Zoom out" title="Zoom out (Ctrl or ⌘ and -)">−</button>
+        <button id="zoom-level" type="button">85%</button>
+        <button id="zoom-in" type="button" aria-label="Zoom in" title="Zoom in (Ctrl or ⌘ and +)">+</button>
+      </div>
+    </div>
+    <div id="preview" role="region" aria-label="Drawing. Click an element to find its line." tabindex="0"></div>
     <div class="export-head">
       <h2 id="export-title">Export as code</h2>
       <div role="tablist" aria-label="Export">
         <button role="tab" id="tab-openui" aria-selected="false" aria-controls="export-output" tabindex="0">OpenUI</button>
         <button role="tab" id="tab-html" aria-selected="false" aria-controls="export-output" tabindex="-1">HTML</button>
       </div>
+      <button id="export-close" type="button" class="quiet fold-btn" aria-controls="export" hidden>Hide</button>
     </div>
     <div id="export" hidden><button id="copyexport" type="button">Copy</button><pre id="export-output" role="tabpanel" tabindex="0"></pre></div>
   </section>

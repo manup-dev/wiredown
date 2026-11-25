@@ -10,7 +10,7 @@ cpSync(join(here, '../src'), join(dist, 'src'), { recursive: true });
 cpSync(join(here, '../wiremark.css'), join(dist, 'wiremark.css'));
 const pkg = JSON.parse(readFileSync(join(here, '../package.json'), 'utf8'));
 const repo = String(pkg.repository?.url ?? '').replace(/^git\+/, '').replace(/\.git$/, '');
-for (const f of ['index.html', 'app.js', 'app.css', 'share.js', 'examples.js']) {
+for (const f of ['index.html', 'app.js', 'app.css', 'share.js', 'examples.js', 'examples-product.js', 'examples-journeys.js', 'select.js', 'layout.js']) {
   let text = readFileSync(join(here, f), 'utf8').replaceAll("'../src/", "'./src/").replaceAll('"../wiremark.css"', '"wiremark.css"');
   if (f === 'index.html') text = repo ? text.replace('https://github.com/REPO', repo) : text.replace(/ · <a href="https:\/\/github.com\/REPO">GitHub<\/a>/, '');
   if (OUTSIDE.some((re) => re.test(text))) throw new Error(`${f} still imports outside dist`);

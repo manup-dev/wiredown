@@ -1,5 +1,7 @@
 // The playground's example gallery. Plain strings: the page runs unbuilt, so no file reads.
 import { CONTRACT_EXAMPLE } from '../src/contract.js';
+import { PRODUCT } from './examples-product.js';
+import { JOURNEYS } from './examples-journeys.js';
 
 const SETTINGS = `@device phone
 @look clean
@@ -244,10 +246,13 @@ screen invite "Invite user"
 variant invite-error of invite "Invalid email"
   #invite-email error="Enter a valid email address"`;
 
+// `group` is the heading the Examples menu files each one under.
 export const EXAMPLES = [
-  { id: 'sign-in', label: 'Sign in (the README example)', body: CONTRACT_EXAMPLE },
-  { id: 'settings', label: 'Team settings', body: SETTINGS },
-  { id: 'onboarding', label: 'Onboarding flow', body: ONBOARDING },
-  { id: 'checkout', label: 'Checkout flow', body: CHECKOUT },
-  { id: 'admin', label: 'Admin console', body: ADMIN },
+  { id: 'sign-in', label: 'Sign in (the README example)', body: CONTRACT_EXAMPLE, group: 'Start here' },
+  { id: 'settings', label: 'Team settings', body: SETTINGS, group: 'Start here' },
+  { id: 'onboarding', label: 'Onboarding flow', body: ONBOARDING, group: 'Flows' },
+  { id: 'checkout', label: 'Checkout flow', body: CHECKOUT, group: 'Flows' },
+  ...JOURNEYS.map((e) => ({ ...e, group: 'Flows' })),
+  { id: 'admin', label: 'Admin console', body: ADMIN, group: 'Product states' },
+  ...PRODUCT.map((e) => ({ ...e, group: 'Product states' })),
 ];

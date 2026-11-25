@@ -33,7 +33,7 @@ Status: version 0.1.0, not yet published to npm. Until it is, clone this reposit
 
 ## Try it
 
-Playground: coming with the first release.
+Playground: [manup-dev.github.io/wiremark](https://manup-dev.github.io/wiremark/). Type on the left and the screens draw on the right. Click any drawn element to find its line, fold screens, zoom, try the example flows, and share a link (the text travels in the link; nothing is sent to a server).
 
 ## Why
 

@@ -4,6 +4,8 @@ import { renderMockBlock, parseMock, renderScreenSvg, lintMock, slug, AI_CONTRAC
 import { toOpenUI, toHTML } from '../src/export/index.js';
 import { encodeShare, decodeShare } from './share.js';
 import { EXAMPLES } from './examples.js';
+import { initSelect } from './select.js';
+import { initLayout } from './layout.js';
 
 const $ = (id) => document.getElementById(id);
 const source = $('source'), gutter = $('gutter'), preview = $('preview'), problems = $('problems');
@@ -41,11 +43,14 @@ function render() {
   if (said !== problems.dataset.said) {
     problems.dataset.said = said;
     problems.replaceChildren(...(found.length ? found.map(problemItem) : [okItem()]));
+    paintProblemsMore(found.length);
   }
   paintGutter(text, new Set(found.map((p) => p.line)));
   syncExamples(text);
   if (selectedTab()) fillExport();
   store.set('wiremark.draft', text);
+  layout.decorate();
+  select.refresh();
 }
 
 function problemItem(p) {
@@ -60,6 +65,16 @@ function problemItem(p) {
   li.append(b);
   return li;
 }
+// A long problems list folds to its first two, so it never pushes the editor off the page.
+let problemsOpen = false;
+const more = $('problems-more');
+function paintProblemsMore(n) {
+  more.hidden = n < 3;
+  problems.classList.toggle('folded', n >= 3 && !problemsOpen);
+  more.setAttribute('aria-expanded', String(problemsOpen));
+  more.textContent = problemsOpen ? 'Show fewer' : `Show ${n - 2} more`;
+}
+more.addEventListener('click', () => { problemsOpen = !problemsOpen; paintProblemsMore(problems.children.length); });
 function okItem() { const li = document.createElement('li'); li.className = 'ok'; li.textContent = 'No problems'; return li; }
 
 problems.addEventListener('click', (e) => {
@@ -126,7 +141,12 @@ function intro() {
 // ── Examples ──
 function fillExamples() {
   const draft = new Option('Your draft', ''); draft.hidden = true;
-  examples.append(draft, ...EXAMPLES.map((ex) => new Option(ex.label, ex.id)));
+  const groups = new Map();
+  for (const ex of EXAMPLES) {
+    if (!groups.has(ex.group)) { const g = document.createElement('optgroup'); g.label = ex.group; groups.set(ex.group, g); }
+    groups.get(ex.group).append(new Option(ex.label, ex.id));
+  }
+  examples.append(draft, ...groups.values());
 }
 function syncExamples(text) {
   const match = EXAMPLES.find((ex) => ex.body === text);
@@ -209,27 +229,11 @@ $('html').addEventListener('click', () => {
   download(`${nameBase()}.html`, 'text/html', page);
 });
 
-// ── Prototype clicks: show the linked screen without touching the URL ──
-preview.addEventListener('click', (e) => {
-  const a = e.target.closest('a[href^="#wm-"]');
-  if (!a) return;
-  e.preventDefault();
-  const target = preview.querySelector(`[id="${CSS.escape(a.getAttribute('href').slice(1))}"]`);
-  const fig = target?.closest('figure.wm');
-  if (!target || !fig) return;
-  if (fig.classList.contains('wm-proto')) {
-    fig.querySelectorAll('.wm-screen.is-current').forEach((s) => s.classList.remove('is-current'));
-    target.classList.add('is-current');
-    fig.dataset.wmCurrent = target.dataset.wmScreen;
-  }
-  target.scrollIntoView({ block: 'start', inline: 'nearest', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
-  target.classList.remove('flash'); void target.offsetWidth; target.classList.add('flash');
-});
-
 // ── Export tabs (WAI-ARIA tabs: arrows move, Home and End jump) ──
 const selectedTab = () => tabs.find((t) => t.getAttribute('aria-selected') === 'true');
 function selectTab(tab, focus) {
   for (const t of tabs) { const on = t === tab; t.setAttribute('aria-selected', String(on)); t.tabIndex = on ? 0 : -1; }
+  $('export-close').hidden = false;
   exportOut.setAttribute('aria-labelledby', tab.id);
   exportBox.hidden = false;
   if (focus) tab.focus();
@@ -245,7 +249,7 @@ function fillExport() {
     : result.files.map((f) => (isOpenUI ? `// ── ${f.name} ──\n` : `<!-- ── ${f.name} ── -->\n`) + f.text).join('\n');
 }
 for (const t of tabs) {
-  t.addEventListener('click', () => selectTab(t, false));
+  t.addEventListener('click', () => (t === selectedTab() ? closeExport() : selectTab(t, false)));
   t.addEventListener('keydown', (e) => {
     const i = tabs.indexOf(t), n = tabs.length;
     const to = { ArrowRight: (i + 1) % n, ArrowLeft: (i - 1 + n) % n, Home: 0, End: n - 1 }[e.key];
@@ -253,8 +257,29 @@ for (const t of tabs) {
     e.preventDefault(); selectTab(tabs[to], true);
   });
 }
+// Clicking the open tab again, or Hide, folds the code away.
+function closeExport() {
+  const back = selectedTab();
+  for (const t of tabs) { t.setAttribute('aria-selected', 'false'); t.tabIndex = t === tabs[0] ? 0 : -1; }
+  exportBox.hidden = true; $('export-close').hidden = true;
+  store.set('wiremark.tab', '');
+  if (document.activeElement === $('export-close')) (back ?? tabs[0]).focus();
+}
+$('export-close').addEventListener('click', closeExport);
 $('copyexport').addEventListener('click', async () => {
   toast((await copyText(exportOut.textContent)) ? 'Code copied' : 'Could not copy the code.');
+});
+
+// ── Drawing ↔ text, and the layout controls ──
+let layout = null;
+const select = initSelect({ preview, source, info, isOk: () => !!parsed?.ok, onReveal: (id) => layout?.reveal(id) });
+layout = initLayout({ $, store, preview, onChange: () => select.reposition(), goTo: (id) => select.goTo(id) });
+
+// ⌘S or Ctrl+S copies a share link instead of saving the page.
+const mac = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
+$('keys-hint').textContent += ` ${mac ? '⌘S' : 'Ctrl+S'} copies a link.`;
+document.addEventListener('keydown', (e) => {
+  if ((mac ? e.metaKey : e.ctrlKey) && !e.shiftKey && !e.altKey && e.key.toLowerCase() === 's') { e.preventDefault(); $('share').click(); }
 });
 
 // ── Theme ──
